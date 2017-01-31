@@ -13,8 +13,7 @@ const stateNavigator = new StateNavigator();
 configStateNav(stateNavigator);
 
 // Stores
-import Game from 'project/stores/game';
-const gameStore = new Game();
+import Stores from 'project/stores';
 
 // Listens for navigation events and renders the Relay RootContainer, passing in the Relay Route and Component retrieved from the state.
 stateNavigator.onNavigate((oldState, state, data) => {
@@ -23,14 +22,14 @@ stateNavigator.onNavigate((oldState, state, data) => {
   const Component = state.component;
 
   render(
-    <Provider gameStore={gameStore}>
+    <Provider {...Stores}>
       <AppContainer>
         <App>
           <Component />
         </App>
       </AppContainer>
     </Provider>,
-    document.getElementById('root')
+    document.getElementById('root'),
   );
 });
 

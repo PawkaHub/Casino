@@ -5,15 +5,13 @@ import { StateNavigator } from 'navigation';
 import { Provider, useStaticRendering } from 'mobx-react';
 
 // Libraries
+import template from 'libraries/server/template';
 import { capitalize } from 'libraries/utils';
 
 // Project
 import App from 'project/client/views/app';
-import template from 'project/server/template';
 import { configStateNav } from 'project/shared';
-
-// Stores
-import Game from 'project/stores/game';
+import Stores from 'project/stores';
 
 // Project Name
 const { project } = process.env;
@@ -31,15 +29,12 @@ const ssr = (req, res, next) => {
     // Radium Config for passing server side styles to the client
     const radiumConfig = { userAgent: req.headers['user-agent'] };
 
-    // console.log('data', state, data);
-
     // Stores
     useStaticRendering(true);
-    const gameStore = new Game();
 
     // Render the first time
     const markup = renderToString(
-      <Provider gameStore={gameStore}>
+      <Provider {...Stores}>
         <App radiumConfig={radiumConfig}>
           <Component />
         </App>
