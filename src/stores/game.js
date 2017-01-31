@@ -10,6 +10,6 @@ export default class Game {
   }
 
   @action draw = ({ card }) => {
-    console.log('Draw');
+    console.log('Draw!', card);
   }
 }

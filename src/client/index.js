@@ -37,7 +37,11 @@ stateNavigator.start();
 
 if (module.hot) {
   // We accept the shared directory here as well as that's where the grand majority of our view imports live due to us making use of the shared server and client rendering functionality of react and navigation router, so we need to catch changes that get propagated there and update our state configuration accordingly so that we see the proper updated files
-  module.hot.accept(['project/client/views/app', 'project/shared'], () => {
+  module.hot.accept([
+    'project/client/views/app',
+    'project/shared',
+    'project/stores',
+  ], () => {
     console.log('Hot Reloading Client...');
 
     // Update the State Navigator and render the updated HMR files
