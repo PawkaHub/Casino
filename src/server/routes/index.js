@@ -7,7 +7,7 @@ const router = express.Router();
 // Server Side Only Routes
 import deal from 'project/server/routes/deal';
 
-// router.use(api);
+// API Routes
 router.use('/api', deal);
 
 export default router;

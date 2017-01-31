@@ -22,7 +22,6 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.16.0",
     "babel-preset-stage-1": "^6.5.0",
-    "debug": "^2.2.0",
     "mobx-react-devtools": "^4.2.10",
     "react-hot-loader": "^3.0.0-beta.2",
     "stats-webpack-plugin": "^0.4.2",

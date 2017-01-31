@@ -1,7 +1,5 @@
 // NPM
 import express from 'express';
-import colors from 'colors';
-import debug from 'debug';
 import path from 'path';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -9,9 +7,6 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 
 // Project
 import config from 'project/config/webpack.config.babel';
-
-// Output message to the console
-debug(colors.yellow('Using webpack-dev-middleware'));
 
 // Initialize webpack config
 const router = express.Router();

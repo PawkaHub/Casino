@@ -71,12 +71,8 @@ instance = server.listen(SERVER_PORT, () => {
   console.log(`SERVER: Listening at ${SERVER_URL}:${SERVER_PORT}`);
 });
 
+// Reload the server every time a file is changed with HMR
 if (module.hot) {
-  module.hot.accept((updated) => {
-    console.log('Hot Reloading Server...', updated);
-  });
-
-  module.hot.dispose((data) => {
-    data.instance = instance;
-  });
+  module.hot.accept();
+  module.hot.dispose((data) => { data.instance = instance; });
 }
