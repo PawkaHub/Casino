@@ -1,6 +1,5 @@
 // Webpack Generator
-import webpackGenerator from '../../tools/webpack/webpackGenerator';
-import { ROOT_DIR } from '../../tools/environment';
+import { ROOT_DIR, webpackGenerator } from '../../tools/webpack/webpackGenerator';
 
 // Project
 import { BUILD_DIR, SERVER_PORT, PROJECT_NAME } from './constants';
@@ -48,9 +47,6 @@ const toolsConfig = webpackGenerator({
     // Commands
     serve: [`${ROOT_DIR}/tools/commands/serve`],
     hot: [`${ROOT_DIR}/tools/commands/hot`],
-
-    // Environment
-    environment: [`${ROOT_DIR}/tools/environment`],
 
     // Webpack
     'webpack.config.babel': ['./src/config/webpack.config.babel'],

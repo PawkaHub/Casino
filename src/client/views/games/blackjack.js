@@ -30,7 +30,7 @@ export default class Blackjack extends Component {
 
     return (
       <div style={style.wrapper}>
-        Blackjack Game!!!
+        Hello!!!
       </div>
     );
   }

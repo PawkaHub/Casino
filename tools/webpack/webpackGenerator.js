@@ -7,8 +7,7 @@ import webpack from 'webpack';
 import path from 'path';
 import fs from 'fs';
 
-// Directory Paths
-import { ROOT_DIR } from '../environment';
+const ROOT_DIR = path.resolve('.');
 
 const getResolveSettings = ({ project }) => {
   return {
@@ -192,4 +191,4 @@ const webpackGenerator = ({
   return config;
 };
 
-export default webpackGenerator;
+export { ROOT_DIR, webpackGenerator };

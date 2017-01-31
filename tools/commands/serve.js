@@ -1,6 +1,4 @@
 // NPM
-import colors from 'colors';
-import debug from 'debug';
 import path from 'path';
 import childProcess from 'child_process';
 import webpack from 'webpack';

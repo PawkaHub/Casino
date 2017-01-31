@@ -5,7 +5,7 @@ const router = express.Router();
 
 export default router.get('/deal', (req, res) => {
   res.send({
-    title: 'Api Deal!!!',
+    title: 'Api Deal!!',
     body: 'Deal!',
   });
 });
