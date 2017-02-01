@@ -30,7 +30,7 @@ const serverConfig = webpackGenerator({
   hot: true,
   sourceMaps: 'eval',
   entry: {
-    server: ['./src/server/index'],
+    server: ['./libraries/server/index'],
   },
   output: BUILD_DIR,
 });

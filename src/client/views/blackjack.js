@@ -97,7 +97,7 @@ export default class Blackjack extends Component {
 
     return (
       <div style={style.wrapper}>
-        <div style={style.title}>Start Blackjack!</div>
+        <div style={style.title}>Start Blackjack!!!</div>
         <div onClick={this.deal}>Deal</div>
         <div onClick={this.hit}>Hit</div>
         <div onClick={this.stand}>Stand</div>

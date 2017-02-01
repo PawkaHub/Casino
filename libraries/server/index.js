@@ -7,14 +7,12 @@ import hot from 'tools/commands/hot';
 
 // Libraries
 import { log } from 'libraries/utils';
-const ssr = require('libraries/server/ssr').default;
 import template from 'libraries/server/template';
 
 // Project
-const api = require('project/server/api').default;
 import { SERVER_URL, SERVER_PORT } from 'project/config/constants';
 
-console.log('SERVER: Initializing');
+console.log('SERVER: Initializing', module.id);
 
 // Initialize Express
 const server = express();
@@ -54,7 +52,7 @@ server.use(bodyParser.json());
 // Include Server Routes as a middleware that is reloaded on module changes
 server.use((req, res, next) => {
   // const api = await import('project/server/api').catch(log.error);
-  const api = require('project/server/api').default;
+  const api = require('project/server').default;
   api(req, res, next);
 });
 
@@ -71,28 +69,23 @@ console.log('SERVER: SSR Initialized');
 
 // Initialize Server
 const instance = server.listen(SERVER_PORT, () => {
-  console.log(`SERVER: Listening at ${SERVER_URL}:${SERVER_PORT}`);
+  console.log(`SERVER!: Listening at ${SERVER_URL}:${SERVER_PORT}`);
 });
+
+console.log('Rerunning');
 
 // Reload the server every time a file is changed with HMR
 if (module.hot) {
-  module.hot.accept((updated) => {
-    console.log('Updated', updated);
+  module.hot.accept(['project/server'], (updated) => {
+    console.log('Hot Reloading Server...', updated);
   });
 
   module.hot.status((status) => {
-    console.log('status', status);
-    if (status === 'apply') {
-      console.log('Hot Reloading Server...');
-      // const nextApi = await import('project/server/api').catch(log.error);
-      // const nextSSR = await import('libraries/server/ssr').catch(log.error);
-    }
+    console.log('Hot Reload Status', status);
   });
 
   module.hot.dispose((data) => {
     console.log('SERVER: Closing');
-    // delete require.cache[require.resolve('project/server/api')];
-    // delete require.cache[require.resolve('libraries/server/ssr')];
     instance.close();
   });
 }

@@ -27,8 +27,8 @@
     "stats-webpack-plugin": "^0.4.2",
     "strip-loader": "^0.1.2",
     "webpack": "2.2.1",
-    "webpack-dev-middleware": "^1.8.4",
-    "webpack-hot-middleware": "^2.13.0",
+    "webpack-dev-middleware": "^1.9.0",
+    "webpack-hot-middleware": "^2.16.1",
     "webpack-node-externals": "^1.5.4",
     "webpack-notifier": "^1.4.1"
   },
