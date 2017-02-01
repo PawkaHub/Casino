@@ -7,9 +7,11 @@ import hot from 'tools/commands/hot';
 
 // Libraries
 import { log } from 'libraries/utils';
+import ssr from 'libraries/server/ssr';
 import template from 'libraries/server/template';
 
 // Project
+import api from 'project/server/api';
 import { SERVER_URL, SERVER_PORT } from 'project/config/constants';
 
 console.log('SERVER: Initializing');
@@ -50,18 +52,18 @@ server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
 // Include Server Routes as a middleware that is reloaded on module changes
-server.use(async (req, res, next) => {
+server.use((req, res, next) => {
   // const api = await import('project/server/api').catch(log.error);
-  const api = require('project/server/api').default;
+  // const api = require('project/server/api').default;
   api(req, res, next);
 });
 
 console.log('SERVER: Routes Loaded');
 
 // Any other requests get passed to the client app's server rendering
-server.get('*', async (req, res, next) => {
+server.get('*', (req, res, next) => {
   // const ssr = await import('libraries/server/ssr').catch(log.error);
-  const ssr = require('libraries/server/ssr').default;
+  // const ssr = require('libraries/server/ssr').default;
   ssr(req, res, next);
 });
 
