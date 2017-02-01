@@ -1,10 +1,15 @@
 // Project Views
-import Blackjack from 'project/client/views/games/blackjack';
+import Lobby from 'project/client/views/lobby';
+import Blackjack from 'project/client/views/blackjack';
 
 // Configures the states for all views.
 const States = [{
-  key: 'blackjack',
+  key: 'lobby',
   route: '',
+  component: Lobby,
+}, {
+  key: 'blackjack',
+  route: 'blackjack',
   component: Blackjack,
 }];
 

@@ -5,6 +5,7 @@ import express from 'express';
 import template from 'libraries/server/template';
 
 // Project
+import { log } from 'libraries/utils';
 import { SERVER_URL, SERVER_PORT } from 'project/config/constants';
 
 // Handle Reloading Server between hot module reloads
@@ -52,15 +53,15 @@ console.log('SERVER: Health Check Initialized');
 
 // Include Server Routes as a middleware that is reloaded on module changes
 server.use(async (req, res, next) => {
-  const routes = await System.import('project/server/routes');
-  routes.default(req, res, next);
+  const api = await System.import('project/server/api').catch(log.error);
+  api.default(req, res, next);
 });
 
 console.log('SERVER: Routes Loaded');
 
 // Any other requests get passed to the client app's server rendering
 server.get('*', async (req, res, next) => {
-  const ssr = await System.import('libraries/server/ssr');
+  const ssr = await System.import('libraries/server/ssr').catch(log.error);
   ssr.default(req, res, next);
 });
 

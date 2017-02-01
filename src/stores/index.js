@@ -1,8 +1,8 @@
-// Libraries
-import Game from 'project/stores/game';
+// Stores
+import Store from 'project/stores/store';
 
 const Stores = {
-  gameStore: new Game(),
+  store: new Store(),
 }
 
 export default Stores;

@@ -14,3 +14,10 @@ export const alphanumeric = (string) => {
   if (!string) return;
   return string.replace(/[^0-9a-z ]/gi, '');
 };
+
+
+export const log = {
+  error(error) {
+    return console.error(error);
+  }
+}
