@@ -72,8 +72,6 @@ const instance = server.listen(SERVER_PORT, () => {
   console.log(`SERVER!: Listening at ${SERVER_URL}:${SERVER_PORT}`);
 });
 
-console.log('Rerunning');
-
 // Reload the server every time a file is changed with HMR
 if (module.hot) {
   module.hot.accept(['project/server'], (updated) => {
