@@ -89,6 +89,8 @@ if (module.hot) {
 
   module.hot.dispose((data) => {
     console.log('SERVER: Closing');
+    // delete require.cache[require.resolve('project/server/api')];
+    // delete require.cache[require.resolve('libraries/server/ssr')];
     instance.close();
   });
 }
