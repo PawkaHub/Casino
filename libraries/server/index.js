@@ -7,21 +7,19 @@ import hot from 'tools/commands/hot';
 
 // Libraries
 import { log } from 'libraries/utils';
+import ssr from 'libraries/server/ssr';
 import template from 'libraries/server/template';
 
 // Project
+import api from 'project/server/api';
 import { SERVER_URL, SERVER_PORT } from 'project/config/constants';
 
 // Handle Reloading Server between hot module reloads
 let instance;
-if (module.hot.data) { instance = module.hot.data.instance; }
+// let serverApi = api;
+// let serverSSR = ssr;
 
 console.log('SERVER: Called');
-
-if (instance) {
-  console.log('SERVER: Closing');
-  instance.close();
-}
 
 console.log('SERVER: Initializing');
 
@@ -62,16 +60,16 @@ server.use(bodyParser.json());
 
 // Include Server Routes as a middleware that is reloaded on module changes
 server.use(async (req, res, next) => {
-  const api = await import('project/server/api').catch(log.error);
-  api.default(req, res, next);
+  // const api = await import('project/server/api').catch(log.error);
+  api(req, res, next);
 });
 
 console.log('SERVER: Routes Loaded');
 
 // Any other requests get passed to the client app's server rendering
 server.get('*', async (req, res, next) => {
-  const ssr = await import('libraries/server/ssr').catch(log.error);
-  ssr.default(req, res, next);
+  // const ssr = await import('libraries/server/ssr').catch(log.error);
+  ssr(req, res, next);
 });
 
 console.log('SERVER: SSR Initialized');
@@ -83,6 +81,21 @@ instance = server.listen(SERVER_PORT, () => {
 
 // Reload the server every time a file is changed with HMR
 if (module.hot) {
-  module.hot.accept();
-  module.hot.dispose((data) => { data.instance = instance; });
+  module.hot.accept((updated) => {
+    console.log('Updated', updated);
+  });
+
+  module.hot.status(async (status) => {
+    console.log('status', status);
+    if (status === 'apply') {
+      console.log('Hot Reloading Server...');
+      // const nextApi = await import('project/server/api').catch(log.error);
+      // const nextSSR = await import('libraries/server/ssr').catch(log.error);
+    }
+  });
+
+  module.hot.dispose((data) => {
+    console.log('SERVER: Closing');
+    instance.close();
+  });
 }
