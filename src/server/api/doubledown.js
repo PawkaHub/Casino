@@ -8,6 +8,9 @@ import Hand from 'project/server/models/hand';
 const router = express.Router();
 
 export default router.post('/api/doubledown', (req, res) => {
+  const { body } = req;
+  console.log('Api Doubledown Post Body', body);
+
   /* var session = req.session;
 
   //check to see if we're trying to doubledown before the deal

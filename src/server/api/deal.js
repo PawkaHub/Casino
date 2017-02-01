@@ -8,6 +8,9 @@ import Hand from 'project/server/models/hand';
 const router = express.Router();
 
 export default router.post('/api/deal', (req, res) => {
+  const { body } = req;
+  console.log('Api Deal Post Body', body);
+
   /* var session = req.session;
 
   //check to see if deal has already been called

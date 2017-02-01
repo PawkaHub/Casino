@@ -7,6 +7,8 @@ export default class Store {
   }
 
   async send({ url = log.error('Please Provide an URL'), data }) {
+    console.log('params', url, data);
+
     // Specify request headers
     const headers = new Headers({
       'Content-Type': 'application/json',
@@ -17,6 +19,13 @@ export default class Store {
       method: 'POST',
       headers,
     };
+
+    // Specify JSON Data, if there is any
+    if (data) {
+      // const bodyData = new FormData();
+      // bodyData.append('json', JSON.stringify(data));
+      request.body = JSON.stringify(data);
+    }
 
     console.log('send', request);
     // Fetch the data from the API endpoint for the server

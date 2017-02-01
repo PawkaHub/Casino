@@ -30,7 +30,7 @@ export default class Blackjack extends Component {
     const { store } = this.props;
     store.send({
       url: '/api/deal',
-      payload: {
+      data: {
         hello: 'deal',
       },
     });
@@ -41,7 +41,7 @@ export default class Blackjack extends Component {
     const { store } = this.props;
     store.send({
       url: '/api/hit',
-      payload: {
+      data: {
         hello: 'hit',
       },
     });
@@ -52,7 +52,7 @@ export default class Blackjack extends Component {
     const { store } = this.props;
     store.send({
       url: '/api/stand',
-      payload: {
+      data: {
         hello: 'stand',
       },
     });
@@ -63,7 +63,7 @@ export default class Blackjack extends Component {
     const { store } = this.props;
     store.send({
       url: '/api/doubledown',
-      payload: {
+      data: {
         hello: 'doubleDown',
       },
     });
@@ -74,7 +74,7 @@ export default class Blackjack extends Component {
     const { store } = this.props;
     store.send({
       url: '/api/split',
-      payload: {
+      data: {
         hello: 'split',
       },
     });
@@ -85,7 +85,7 @@ export default class Blackjack extends Component {
     const { store } = this.props;
     store.send({
       url: '/api/surrender',
-      payload: {
+      data: {
         hello: 'surrender',
       },
     });
