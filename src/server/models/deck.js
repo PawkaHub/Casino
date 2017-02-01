@@ -6,6 +6,7 @@ import Card from 'project/server/models/card';
 
 // Standard 52 Card Deck
 export default class Deck {
+  // Populate a deck with 52 cards when an instance of this class is created
   constructor() {
     const { suits, ranks } = Card;
     this.cards = suits.reduce((memo, suit) => {

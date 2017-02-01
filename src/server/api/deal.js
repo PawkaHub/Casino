@@ -44,6 +44,6 @@ export default router.post('/api/deal', (req, res) => {
   }*/
 
   res.status(200).json({
-    hello: 'Api Deal Result!!!!!',
+    hello: 'Api Deal Result!',
   });
 });

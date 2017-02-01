@@ -40,6 +40,6 @@ export default router.post('/api/hit', (req, res) => {
   }*/
 
   res.status(200).json({
-    hello: 'Api Hit Result',
+    hello: 'Api Hit Result!',
   });
 });
