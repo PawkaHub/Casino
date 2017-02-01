@@ -39,8 +39,7 @@ export default router.post('/api/hit', (req, res) => {
     res.status(200).json("{ message: " + message + " }");
   }*/
 
-  res.send({
-    title: 'Hit Title!',
-    body: 'Hit Body!',
+  res.status(200).json({
+    hello: 'Api Hit Result',
   });
 });

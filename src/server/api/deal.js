@@ -43,8 +43,7 @@ export default router.post('/api/deal', (req, res) => {
     res.status(200).json("{ message: " + message + " }");
   }*/
 
-  res.send({
-    title: 'Deal Title!',
-    body: 'Deal Body!',
+  res.status(200).json({
+    hello: 'Api Deal Result',
   });
 });

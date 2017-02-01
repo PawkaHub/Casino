@@ -23,16 +23,17 @@
     "babel-preset-stage-0": "^6.16.0",
     "babel-preset-stage-1": "^6.5.0",
     "mobx-react-devtools": "^4.2.10",
-    "react-hot-loader": "^3.0.0-beta.2",
+    "react-hot-loader": "^3.0.0-beta.6",
     "stats-webpack-plugin": "^0.4.2",
     "strip-loader": "^0.1.2",
-    "webpack": "2.1.0-beta.25",
+    "webpack": "2.2.1",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.0",
     "webpack-node-externals": "^1.5.4",
     "webpack-notifier": "^1.4.1"
   },
   "dependencies": {
+    "body-parser": "^1.16.0",
     "cors": "^2.8.1",
     "express": "^4.14.0",
     "mobx": "^2.2.2",
@@ -52,8 +53,7 @@
     ],
     "plugins": [
       "transform-runtime",
-      "transform-decorators-legacy",
-      "react-hot-loader/babel"
+      "transform-decorators-legacy"
     ]
   },
   "eslintConfig": {

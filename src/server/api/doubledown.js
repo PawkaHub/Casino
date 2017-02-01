@@ -49,8 +49,7 @@ export default router.post('/api/doubledown', (req, res) => {
     }
   }*/
 
-  res.send({
-    title: 'Doubledown Title!',
-    body: 'Doubledown Body!',
+  res.status(200).json({
+    hello: 'Api Doubledown Result',
   });
 });

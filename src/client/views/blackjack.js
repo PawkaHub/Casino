@@ -47,18 +47,19 @@ export default class Blackjack extends Component {
     });
   }
 
-  @action stay = () => {
-    console.log('stay');
+  @action stand = () => {
+    console.log('stand');
     const { store } = this.props;
     store.send({
-      url: '/api/stay',
+      url: '/api/stand',
       payload: {
-        hello: 'stay',
+        hello: 'stand',
       },
     });
   }
 
   @action doubleDown = () => {
+    console.log('doubleDown');
     const { store } = this.props;
     store.send({
       url: '/api/doubledown',
@@ -69,6 +70,7 @@ export default class Blackjack extends Component {
   }
 
   @action split = () => {
+    console.log('split');
     const { store } = this.props;
     store.send({
       url: '/api/split',
@@ -79,6 +81,7 @@ export default class Blackjack extends Component {
   }
 
   @action surrender = () => {
+    console.log('surrender');
     const { store } = this.props;
     store.send({
       url: '/api/surrender',
@@ -94,10 +97,10 @@ export default class Blackjack extends Component {
 
     return (
       <div style={style.wrapper}>
-        <div style={style.title}>Start Blackjack</div>
+        <div style={style.title}>Start Blackjack!</div>
         <div onClick={this.deal}>Deal</div>
         <div onClick={this.hit}>Hit</div>
-        <div onClick={this.stay}>Stay</div>
+        <div onClick={this.stand}>Stand</div>
         <div onClick={this.doubleDown}>Double Down</div>
         <div onClick={this.split}>Split</div>
         <div onClick={this.surrender}>Surrender</div>

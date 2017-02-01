@@ -38,6 +38,18 @@ const getRules = ({ optimize = false }) => {
     test: /\.jsx?$/,
     exclude: /node_modules/,
     loader: 'babel-loader',
+    query: {
+      presets: [
+        ['es2015', { modules: false }],
+        'react',
+        'stage-1',
+        'stage-0',
+      ],
+      plugins: [
+        'transform-runtime',
+        'transform-decorators-legacy'
+      ],
+    },
   }];
 
   // Strip out all `console` statements if optimize flag is set
@@ -113,7 +125,7 @@ const getPlugins = ({
   // Handle Hot Module Reloading
   if (hot) {
     plugins.push(new webpack.HotModuleReplacementPlugin());
-    plugins.push(new webpack.NoErrorsPlugin());
+    plugins.push(new webpack.NoEmitOnErrorsPlugin());
   }
 
   return plugins;

@@ -7,7 +7,7 @@ import Hand from 'project/server/models/hand';
 
 const router = express.Router();
 
-export default router.post('/api/stay', (req, res) => {
+export default router.post('/api/stand', (req, res) => {
   /* var session = req.session;
 
   //check to see if we're trying to stand before the deal or after we've stood
@@ -39,8 +39,7 @@ export default router.post('/api/stay', (req, res) => {
     res.status(200).json("{ message: " + message + " }");
   }*/
 
-  res.send({
-    title: 'Stay Title!',
-    body: 'Stay Body!',
+  res.status(200).json({
+    hello: 'Api Stand Result',
   });
 });

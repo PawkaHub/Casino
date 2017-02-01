@@ -39,8 +39,7 @@ export default router.post('/api/split', (req, res) => {
     res.status(200).json("{ message: " + message + " }");
   }*/
 
-  res.send({
-    title: 'Split Title!',
-    body: 'Split Body!',
+  res.status(200).json({
+    hello: 'Api Split Result',
   });
 });

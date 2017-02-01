@@ -39,8 +39,7 @@ export default router.post('/api/surrender', (req, res) => {
     res.status(200).json("{ message: " + message + " }");
   }*/
 
-  res.send({
-    title: 'Surrender Title!',
-    body: 'Surrender Body!',
+  res.status(200).json({
+    hello: 'Api Surrender Result',
   });
 });

@@ -19,5 +19,5 @@ export const alphanumeric = (string) => {
 export const log = {
   error(error) {
     return console.error(error);
-  }
-}
+  },
+};
