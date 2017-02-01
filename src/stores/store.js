@@ -22,8 +22,6 @@ export default class Store {
 
     // Specify JSON Data, if there is any
     if (data) {
-      // const bodyData = new FormData();
-      // bodyData.append('json', JSON.stringify(data));
       request.body = JSON.stringify(data);
     }
 
