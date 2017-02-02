@@ -7,6 +7,7 @@ import webpack from 'webpack';
 import path from 'path';
 import fs from 'fs';
 
+// Directory Paths
 const ROOT_DIR = path.resolve('.');
 
 const getResolveSettings = ({ project }) => {

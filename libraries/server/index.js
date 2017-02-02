@@ -6,7 +6,6 @@ import bodyParser from 'body-parser';
 import hot from 'tools/commands/hot';
 
 // Libraries
-import { log } from 'libraries/utils';
 import template from 'libraries/server/template';
 
 // Project
@@ -51,7 +50,6 @@ server.use(bodyParser.json());
 
 // Include Server Routes as a middleware that is reloaded on module changes
 server.use((req, res, next) => {
-  // const api = await import('project/server/api').catch(log.error);
   const api = require('project/server').default;
   api(req, res, next);
 });
@@ -60,7 +58,6 @@ console.log('SERVER: Routes Loaded');
 
 // Any other requests get passed to the client app's server rendering
 server.get('*', (req, res, next) => {
-  // const ssr = await import('libraries/server/ssr').catch(log.error);
   const ssr = require('libraries/server/ssr').default;
   ssr(req, res, next);
 });

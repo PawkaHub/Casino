@@ -37,4 +37,13 @@ export default class Card {
     }
     console.log('Card', Card.suits, Card.ranks, rank, suit);
   }
+
+  /* Card.prototype.toString = function() {
+    return this.rank + this.suit;
+  };
+
+  Card.clone = function(obj) {
+    var card = new Card(obj.rank, obj.suit);
+    return card;
+  }; */
 }

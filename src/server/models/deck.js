@@ -1,7 +1,7 @@
 // NPM
 import { observable, action, computed, asMap } from 'mobx';
 
-// Card
+// Models
 import Card from 'project/server/models/card';
 
 // Standard 52 Card Deck
@@ -9,21 +9,18 @@ export default class Deck {
   // Populate a deck with 52 cards when an instance of this class is created
   constructor() {
     const { suits, ranks } = Card;
+
+    // Generate a new card for this rank and suit and push it to the deck
     this.cards = suits.reduce((memo, suit) => {
-      const result = memo;
-      ranks.forEach((rank) => {
-        // Generate a new card for this rank and suit and push it to the deck
-        const card = new Card(rank, suit);
-        result.push(card);
-      });
-      return result;
+      ranks.forEach((rank) => memo.push(new Card(rank, suit)));
+      return memo;
     }, []);
+
     console.log('Deck', this.cards);
   }
 
   // Draw a card off the top of the deck
   draw() {
-    console.log('draw');
     return this.cards.pop();
   }
 
@@ -48,4 +45,15 @@ export default class Deck {
     console.log('shuffle', this.cards);
     return this.cards;
   }
+
+  /* //produces a clone of the Deck as unfortunately when we pull a Deck object from the
+  // session, the data is all there but the methods don't work.
+  Deck.clone = function (obj) {
+    var deck = new Deck();
+    deck.cards = [obj.cards.length];
+    for (var i = 0; i < obj.cards.length; i++) {
+      deck.cards[i] = Card.clone(obj.cards[i]);
+    }
+    return deck;
+  };*/
 }

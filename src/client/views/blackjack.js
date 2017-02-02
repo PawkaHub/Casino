@@ -26,69 +26,33 @@ export default class Blackjack extends Component {
   }
 
   @action deal = () => {
-    console.log('deal');
     const { store } = this.props;
-    store.send({
-      url: '/api/deal',
-      data: {
-        hello: 'deal',
-      },
-    });
+    store.deal({ hello: 'deal' });
   }
 
   @action hit = () => {
-    console.log('hit');
     const { store } = this.props;
-    store.send({
-      url: '/api/hit',
-      data: {
-        hello: 'hit',
-      },
-    });
+    store.hit({ hello: 'hit' });
   }
 
   @action stand = () => {
-    console.log('stand');
     const { store } = this.props;
-    store.send({
-      url: '/api/stand',
-      data: {
-        hello: 'stand',
-      },
-    });
+    store.stand({ hello: 'stand' });
   }
 
   @action doubleDown = () => {
-    console.log('doubleDown');
     const { store } = this.props;
-    store.send({
-      url: '/api/doubledown',
-      data: {
-        hello: 'doubleDown',
-      },
-    });
+    store.doubleDown({ hello: 'doubleDown' });
   }
 
   @action split = () => {
-    console.log('split');
     const { store } = this.props;
-    store.send({
-      url: '/api/split',
-      data: {
-        hello: 'split',
-      },
-    });
+    store.split({ hello: 'split' });
   }
 
   @action surrender = () => {
-    console.log('surrender');
     const { store } = this.props;
-    store.send({
-      url: '/api/surrender',
-      data: {
-        hello: 'surrender',
-      },
-    });
+    store.surrender({ hello: 'surrender' });
   }
 
   render() {

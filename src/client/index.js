@@ -12,13 +12,11 @@ import { getRootProps, configStateNav } from 'project/shared';
 const stateNavigator = new StateNavigator();
 configStateNav(stateNavigator);
 
-// Stores
-import Stores from 'project/stores';
-
 // Listens for navigation events and renders the Relay RootContainer, passing in the Relay Route and Component retrieved from the state.
 stateNavigator.onNavigate((oldState, state, data) => {
   // We fetch the App from here on navigation change so that we can always ensure that whenever the App file has been changed, that we'll be getting the most recent version of the file and using that in our render function.
   const App = require('project/client/views/app').default;
+  const Stores = require('project/stores').default;
   const Component = state.component;
 
   render(
