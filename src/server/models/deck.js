@@ -1,6 +1,3 @@
-// NPM
-import { observable, action, computed, asMap } from 'mobx';
-
 // Models
 import Card from 'project/server/models/card';
 

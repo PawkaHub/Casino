@@ -2,14 +2,14 @@
 import express from 'express';
 
 // Models
-import Game from 'project/server/models/game';
+import Blackjack from 'project/server/models/games/blackjack';
 import Hand from 'project/server/models/hand';
 
 const router = express.Router();
 
-export default router.post('/api/split', (req, res) => {
+export default router.post('/api/blackjack/surrender', (req, res) => {
   const { body } = req;
-  console.log('Api Split Post Body', body);
+  console.log('Api Surrender Post Body', body);
 
   /* var session = req.session;
 
@@ -43,6 +43,6 @@ export default router.post('/api/split', (req, res) => {
   }*/
 
   res.status(200).json({
-    hello: 'Api Split Result',
+    hello: 'Api Surrender Result',
   });
 });

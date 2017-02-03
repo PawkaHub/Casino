@@ -2,14 +2,25 @@
 import express from 'express';
 
 // Models
-import Game from 'project/server/models/game';
+import Blackjack from 'project/server/models/games/blackjack';
 import Hand from 'project/server/models/hand';
 
 const router = express.Router();
 
-export default router.post('/api/deal', (req, res) => {
-  const { body } = req;
-  console.log('Api Deal Post Body', body);
+export default router.post('/api/blackjack/bet', (req, res) => {
+  const { body, auth } = req;
+  const { playerBetAmount } = body;
+  const { id: playerId } = auth;
+
+  const blackjack = new Blackjack();
+  const currentGame = blackjack.start({ playerId, playerBetAmount });
+  console.log('Api Bet Post Body', currentGame);
+
+  // If a current game already exists, return it accordingly. Otherwise error
+  if (currentGame) return res.status(200).json(currentGame);
+  return res.status(400).json({
+    message: 'You cannot start a new game of Blackjack when one is already in progress.',
+  });
 
   /* if (session.game) {
     res.status(400).json({
@@ -56,6 +67,6 @@ export default router.post('/api/deal', (req, res) => {
   }*/
 
   res.status(200).json({
-    hello: 'Api Deal Result!',
+    hello: 'Api Bet Result!',
   });
 });

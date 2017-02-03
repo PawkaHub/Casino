@@ -2,12 +2,12 @@
 import express from 'express';
 
 // Models
-import Game from 'project/server/models/game';
+import Blackjack from 'project/server/models/games/blackjack';
 import Hand from 'project/server/models/hand';
 
 const router = express.Router();
 
-export default router.post('/api/hit', (req, res) => {
+export default router.post('/api/blackjack/hit', (req, res) => {
   const { body } = req;
   console.log('Api Hit Post Body', body);
 

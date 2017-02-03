@@ -9,11 +9,12 @@ import {
   SERVER_PORT,
 } from 'project/config/constants';
 import { players } from 'project/server/db';
+import Blackjack from 'project/server/models/games/blackjack';
 
 export default class Player {
   find({ playerName }) {
     const player = players.findOne({ name: playerName });
-    console.log('Find', players.data);
+    console.log('Player Find', players.data);
 
     // NOTE: We could easily extend the this.find logic to account for a player's password to get a *true* account system by storing the user's password sent from the client as an scrypted value in the collection (after having the password sent properly over HTTPS to prevent MITM attacks), and comparing the input password from the client with the encryped password stored in the database.
 
@@ -77,6 +78,18 @@ export default class Player {
     console.log('token', token);
 
     // Only return whitelisted player data back to the requester of the server if one exists, otherwise we return nothing.
-    return { id, name, token };
+    const payload = {
+      token,
+      user: { id, name },
+    };
+
+    // Retrieve the latest game of blackjack that's being played by the player and return it as part of the user payload
+    const blackjack = new Blackjack();
+    const currentGame = blackjack.findCurrentGame({ playerId: id });
+    if (currentGame) {
+      payload.blackjack = currentGame.blackjack;
+    }
+
+    return payload;
   }
 }

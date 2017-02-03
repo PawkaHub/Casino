@@ -10,7 +10,7 @@ import Player from 'project/server/models/player';
 const router = express.Router();
 
 // Allow for a new player instance to be created, and for a lobby to be joined
-export default router.post('/api/join', (req, res) => {
+export default router.post('/api/player/join', (req, res) => {
   const { body } = req;
   const { playerName } = body;
 
