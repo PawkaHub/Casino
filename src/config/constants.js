@@ -29,6 +29,9 @@ const SHARED_DIR = `${SRC_DIR}/shared`;
 // Build Directory
 const BUILD_DIR = `${PROJECT_DIR}/build`;
 
+// Fake Secret Key that would normally be an environment variable
+const FAKE_SERVER_SECRET_KEY = 'Fake-1234';
+
 export {
   SERVER_PORT,
   SERVER_URL,
@@ -40,4 +43,5 @@ export {
   SERVER_DIR,
   SHARED_DIR,
   BUILD_DIR,
+  FAKE_SERVER_SECRET_KEY,
 };

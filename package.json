@@ -36,13 +36,18 @@
     "body-parser": "^1.16.0",
     "cors": "^2.8.1",
     "express": "^4.14.0",
+    "express-jwt": "^5.1.0",
+    "jsonwebtoken": "^7.2.1",
+    "lokijs": "^1.4.2",
     "mobx": "^2.2.2",
     "mobx-react": "^3.3.1",
     "navigation": "^3.0.0",
     "navigation-react": "^2.0.3",
     "radium": "^0.18.1",
     "react": "^15.3.2",
-    "react-dom": "^15.1.0"
+    "react-dom": "^15.1.0",
+    "scrypt": "^6.0.3",
+    "uuid": "^3.0.1"
   },
   "babel": {
     "presets": [

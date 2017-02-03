@@ -71,7 +71,11 @@ const instance = server.listen(SERVER_PORT, () => {
 
 // Reload the server every time a file is changed with HMR
 if (module.hot) {
-  module.hot.accept(['project/server'], (updated) => {
+  // Handle Hot Module Reloading within the ssr function so that any changes that are made to the client-side views are reflected on the server as well, because otherwise the server and the client will try to serve up different versions of the same file, causing a react checksum mismatch; which undoes the benefits of server-side rendering to begin with.
+  module.hot.accept([
+    'libraries/server/ssr',
+    'project/server',
+  ], (updated) => {
     console.log('Hot Reloading Server...', updated);
   });
 

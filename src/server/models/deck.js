@@ -45,15 +45,4 @@ export default class Deck {
     console.log('shuffle', this.cards);
     return this.cards;
   }
-
-  /* //produces a clone of the Deck as unfortunately when we pull a Deck object from the
-  // session, the data is all there but the methods don't work.
-  Deck.clone = function (obj) {
-    var deck = new Deck();
-    deck.cards = [obj.cards.length];
-    for (var i = 0; i < obj.cards.length; i++) {
-      deck.cards[i] = Card.clone(obj.cards[i]);
-    }
-    return deck;
-  };*/
 }

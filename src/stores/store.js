@@ -6,8 +6,14 @@ export default class Store {
   async send({ url = log.error('Please Provide an URL'), data }) {
     console.log('params', url, data);
 
+    // Pass in JWT with every request to confirm authorization for API endpoints
+    const jwt = localStorage.getItem('casino-session');
+
     // Specify request headers
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${jwt}`,
+    });
 
     // Specify request type
     const request = { method: 'POST', headers };
@@ -24,6 +30,20 @@ export default class Store {
     console.log('json', json);
 
     return json;
+  }
+
+  async join(data) {
+    const result = await this.send({
+      url: '/api/join',
+      data,
+    }).catch(log.error);
+
+    // If the user has successfully joined the lobby, save their JWT token to localStorage for inclusion in all subsequent API requests
+    const { player } = result;
+    if (player) {
+      const { token } = player;
+      localStorage.setItem('casino-session', token);
+    }
   }
 
   async deal(data) {

@@ -11,6 +11,15 @@ export default router.post('/api/deal', (req, res) => {
   const { body } = req;
   console.log('Api Deal Post Body', body);
 
+  /* if (session.game) {
+    res.status(400).json({
+      message: 'You cannot start a new game of Blackjack when one is already in progress.',
+    });
+  } else {
+    const { bed } = body;
+    const game = new Game({ bed });
+  }*/
+
   /* var session = req.session;
 
   //check to see if deal has already been called

@@ -1,5 +1,5 @@
-// NPM
-import { observable, action, computed, asMap } from 'mobx';
+// Libraries
+import { log } from 'libraries/utils';
 
 // Standard Card Model
 export default class Card {
@@ -28,22 +28,23 @@ export default class Card {
 
   constructor(rank, suit) {
     const { ranks, suits } = Card;
-    if (ranks.indexOf(rank) === -1) {
-      console.error('This card has an invalid rank');
+
+    // Ensure the rank is a valid one as defined above
+    if (ranks.indexOf(rank) >= 0) {
+      this.rank = rank;
+    } else {
+      log.error('This card has an invalid rank');
     }
 
-    if (suits.indexOf(suit) === -1) {
-      console.error('This card has an invalid suit');
+    // Ensure the suit is a valid one as defined above
+    if (suits.indexOf(suit) >= 0) {
+      this.suit = suit;
+    } else {
+      log.error('This card has an invalid suit');
     }
-    console.log('Card', Card.suits, Card.ranks, rank, suit);
   }
 
-  /* Card.prototype.toString = function() {
-    return this.rank + this.suit;
-  };
-
-  Card.clone = function(obj) {
-    var card = new Card(obj.rank, obj.suit);
-    return card;
-  }; */
+  toString() {
+    return `${this.rank}${this.suit}`;
+  }
 }
