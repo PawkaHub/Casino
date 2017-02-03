@@ -81,14 +81,4 @@ Hand.prototype.toString = function() {
     string = string + " " + card.toString();
   });
   return string;
-};
-
-// Clone
-Hand.clone = function(obj) {
-  var hand = new Hand();
-  hand.cards = [obj.cards.length];
-  for (var i = 0; i < obj.cards.length; i++) {
-    hand.cards[i] = Card.clone(obj.cards[i]);
-  }
-  return hand;
 };*/

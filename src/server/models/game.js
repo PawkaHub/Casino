@@ -31,15 +31,6 @@ var Game = function(bet) {
   this.playerHand = new Hand(); // the player's hand
 };
 
-// clone a game so we can reconstitute it from Game object we pull from the session
-Game.clone = function (obj) {
-  var game = new Game(obj.bet);
-  game.deck = Deck.clone(obj.deck);
-  game.playerHand = Hand.clone(obj.playerHand);
-  game.dealerHand = Hand.clone(obj.dealerHand);
-  return game;
-};
-
 // Returns the current state of the game:
 //  the player's hand
 //  the dealer's hand
