@@ -11,9 +11,6 @@ import {
 import { players } from 'project/server/db';
 
 export default class Player {
-  constructor({ playerName }) {
-    this.player = this.join({ playerName });
-  }
   find({ playerName }) {
     const player = players.findOne({ name: playerName });
     console.log('Find', players.data);
@@ -41,13 +38,34 @@ export default class Player {
     // If no player exists, insert a new one into the players collection
     return this.create({ playerName });
   }
+  rejoin(token) {
+    try {
+      // Decode the JWT token and verify that it's valid
+      const decoded = jwt.verify(
+        token,
+        FAKE_SERVER_SECRET_KEY,
+        {
+          audience: `${SERVER_URL}:${SERVER_PORT}/api`,
+          issuer: `${SERVER_URL}:${SERVER_PORT}`,
+        },
+      );
+
+      console.log('decoded', decoded);
+
+      // Get the Name from the decoded JWT token and fetch player by that (in a real world situation we would search by email instead of name to avoid same name collisions, but for the sake of a code sample searching by name will suffice just fine for a basic user account system)
+      const { name: playerName } = decoded;
+      return this.find({ playerName });
+    } catch (err) {
+      throw err;
+    }
+  }
   createSession(player) {
     console.log('createSession', player);
     const { id, name } = player;
 
     // Create a jwt signed token for persisting the session on the client
     const token = jwt.sign(
-      { id },
+      { id, name },
       FAKE_SERVER_SECRET_KEY,
       {
         expiresIn: '24h', // Have the key expire in 24 hours

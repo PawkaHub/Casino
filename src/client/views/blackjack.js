@@ -57,11 +57,15 @@ export default class Blackjack extends Component {
 
   render() {
     const { style } = Blackjack;
-    const { message } = this;
+    const { message, props } = this;
+    const { store } = props;
+    const { id, name } = store.showData();
 
     return (
       <div style={style.wrapper}>
         <div style={style.title}>Start Blackjack!!!</div>
+        <div>ID: {id}</div>
+        <div>Name: {name}</div>
         <div onClick={this.deal}>Deal</div>
         <div onClick={this.hit}>Hit</div>
         <div onClick={this.stand}>Stand</div>

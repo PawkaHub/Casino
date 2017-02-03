@@ -16,8 +16,9 @@ export default router.post('/api/join', (req, res) => {
 
   console.log('join', playerName);
 
-  const player = new Player({ playerName });
+  const player = new Player();
+  const playerData = player.join({ playerName });
 
-  if (player) { return res.status(200).json(player); }
+  if (playerData) return res.status(200).json(playerData);
   return res.status(400).json({ message: 'Error Joining Lobby.' });
 });

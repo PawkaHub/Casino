@@ -1,13 +1,13 @@
 // NPM
 import radium, { StyleRoot, Style } from 'radium';
-import { Provider, observer } from 'mobx-react';
+import { Provider, inject, observer } from 'mobx-react';
 import DevTools from 'mobx-react-devtools';
 import React, { Component } from 'react';
 
 // Libraries
 import Reset from 'libraries/styles/reset';
 
-@radium({ isRoot: true }) @observer
+@inject('store') @radium({ isRoot: true }) @observer
 export default class App extends Component {
   static style = {
     // Main app container
@@ -28,6 +28,19 @@ export default class App extends Component {
       zIndex: 0,
       width: '100%',
     },
+  }
+
+  componentDidMount = () => {
+    const { store } = this.props;
+
+    // Allow for convenient debugging of player data in console
+    const { NODE_ENV } = process.env;
+    if (NODE_ENV === 'development') {
+      window.store = store;
+    }
+
+    // Re-Initialize the current user session, if there is any.
+    store.rejoin();
   }
 
   render() {

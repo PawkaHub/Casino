@@ -44,9 +44,13 @@ export default class Lobby extends Component {
 
   render() {
     const { style } = Lobby;
+    const { store } = this.props;
+    const { id, name } = store.showData();
 
     return (
       <div style={style.wrapper}>
+        <div>ID: {id}</div>
+        <div>Name: {name}</div>
         <Form
           name='playerJoin'
           onReset={this.onReset}

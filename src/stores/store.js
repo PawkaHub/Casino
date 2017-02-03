@@ -1,18 +1,27 @@
+// NPM
+import mobx, { observable, asMap } from 'mobx';
+
 // Libraries
 import { log } from 'libraries/utils';
 
 export default class Store {
 
+  @observable data = asMap()
+
+  showData() {
+    return mobx.toJS(this.data);
+  }
+
   async send({ url = log.error('Please Provide an URL'), data }) {
     console.log('params', url, data);
 
     // Pass in JWT with every request to confirm authorization for API endpoints
-    const jwt = localStorage.getItem('casino-session');
+    const token = localStorage.getItem('casino-session-token');
 
     // Specify request headers
     const headers = new Headers({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${jwt}`,
+      'Authorization': `Bearer ${token}`,
     });
 
     // Specify request type
@@ -32,6 +41,17 @@ export default class Store {
     return json;
   }
 
+  createSession(result) {
+    if (result) {
+      const { id, name, token } = result;
+      this.data.set('id', id);
+      this.data.set('name', name);
+      localStorage.setItem('casino-session-token', token);
+      return { id, name };
+    }
+    return console.error('Error Creating User Session');
+  }
+
   async join(data) {
     const result = await this.send({
       url: '/api/join',
@@ -39,11 +59,13 @@ export default class Store {
     }).catch(log.error);
 
     // If the user has successfully joined the lobby, save their JWT token to localStorage for inclusion in all subsequent API requests
-    const { player } = result;
-    if (player) {
-      const { token } = player;
-      localStorage.setItem('casino-session', token);
-    }
+    return this.createSession(result);
+  }
+
+  async rejoin() {
+    // If a casino-session-token value already exists for this client, pass the token to the server and re-verify it over there, and return the updated token to the client and re-intiailize the session. Naturally in a real world situation things like token expiration and other edge cases would have to be handled, but this is fine for a code sample.
+    const result = await this.send({ url: '/api/rejoin' }).catch(log.error);
+    return this.createSession(result);
   }
 
   async deal(data) {
