@@ -3,7 +3,6 @@ import express from 'express';
 
 // Models
 import Blackjack from 'project/server/models/games/blackjack';
-import Hand from 'project/server/models/hand';
 
 const router = express.Router();
 
@@ -11,7 +10,7 @@ export default router.post('/api/blackjack/hit', (req, res) => {
   const { body, auth } = req;
   const { playerId } = auth;
 
-  // Initialize a game of blackjack for this player, and hit their hand
+  // Initialize/Resume a game of blackjack for this player
   const game = new Blackjack({ playerId });
 
   // Hit
@@ -24,6 +23,10 @@ export default router.post('/api/blackjack/hit', (req, res) => {
   console.log(game.playerHand.cards);
   console.log('DEALER HAND:');
   console.log(game.dealerHand.cards);
+
+  res.status(200).json({
+    hello: 'Api Hit Result!',
+  });
 
   /* var session = req.session;
 
@@ -55,8 +58,4 @@ export default router.post('/api/blackjack/hit', (req, res) => {
 
     res.status(200).json("{ message: " + message + " }");
   }*/
-
-  res.status(200).json({
-    hello: 'Api Hit Result!',
-  });
 });

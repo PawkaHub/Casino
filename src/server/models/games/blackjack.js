@@ -179,16 +179,16 @@ export default class Blackjack extends Base {
     console.log('newHand', newHand);
   }
 
-  deal() {
-    console.log('deal');
-  }
-
   stand() {
     // Run out the dealer's hand until they hit their stand threshold
     console.log('stand');
     do {
       this.hit(this.dealerHand);
     } while (this.getHandScore(this.dealerHand) < Blackjack.DEALER_STAND);
+  }
+
+  doubleDown() {
+    console.log('doubleDown');
   }
 
   split() {

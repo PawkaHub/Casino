@@ -3,13 +3,30 @@ import express from 'express';
 
 // Models
 import Blackjack from 'project/server/models/games/blackjack';
-import Hand from 'project/server/models/hand';
 
 const router = express.Router();
 
 export default router.post('/api/blackjack/surrender', (req, res) => {
-  const { body } = req;
-  console.log('Api Surrender Post Body', body);
+  const { body, auth } = req;
+  const { playerId } = auth;
+
+  // Initialize/Resume a game of blackjack for this player
+  const game = new Blackjack({ playerId });
+
+  // Surrender
+  game.surrender();
+  const { data } = game;
+
+  console.log('DECK:');
+  console.log(game.deck.cards);
+  console.log('PLAYER HAND:');
+  console.log(game.playerHand.cards);
+  console.log('DEALER HAND:');
+  console.log(game.dealerHand.cards);
+
+  res.status(200).json({
+    hello: 'Api Surrender Result!',
+  });
 
   /* var session = req.session;
 
@@ -41,8 +58,4 @@ export default router.post('/api/blackjack/surrender', (req, res) => {
 
     res.status(200).json("{ message: " + message + " }");
   }*/
-
-  res.status(200).json({
-    hello: 'Api Surrender Result',
-  });
 });

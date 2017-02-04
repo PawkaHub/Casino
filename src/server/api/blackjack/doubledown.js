@@ -3,13 +3,30 @@ import express from 'express';
 
 // Models
 import Blackjack from 'project/server/models/games/blackjack';
-import Hand from 'project/server/models/hand';
 
 const router = express.Router();
 
 export default router.post('/api/blackjack/doubledown', (req, res) => {
-  const { body } = req;
-  console.log('Api Doubledown Post Body', body);
+  const { body, auth } = req;
+  const { playerId } = auth;
+
+  // Initialize/Resume a game of blackjack for this player
+  const game = new Blackjack({ playerId });
+
+  // Double Down
+  game.doubleDown();
+  const { data } = game;
+
+  console.log('DECK:');
+  console.log(game.deck.cards);
+  console.log('PLAYER HAND:');
+  console.log(game.playerHand.cards);
+  console.log('DEALER HAND:');
+  console.log(game.dealerHand.cards);
+
+  res.status(200).json({
+    hello: 'Api Doubledown Result!',
+  });
 
   /* var session = req.session;
 
@@ -51,8 +68,4 @@ export default router.post('/api/blackjack/doubledown', (req, res) => {
       res.status(200).json("{ message: " + message + " }");
     }
   }*/
-
-  res.status(200).json({
-    hello: 'Api Doubledown Result',
-  });
 });
