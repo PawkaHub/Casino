@@ -40,7 +40,7 @@ export default class App extends Component {
     }
 
     // Re-Initialize the current user session, if there is any.
-    store.rejoin();
+    store.reauth();
   }
 
   render() {

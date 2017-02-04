@@ -11,7 +11,7 @@ import Player from 'project/server/models/player';
 const router = express.Router();
 
 // Allow for a new player instance to be created, and for a lobby to be joined
-export default router.post('/api/player/rejoin', (req, res) => {
+export default router.post('/api/player/reauth', (req, res) => {
   const auth = req.get('authorization');
   if (auth && auth.split(' ')[0] === 'Bearer') {
     const token = req.headers.authorization.split(' ')[1];
@@ -20,11 +20,10 @@ export default router.post('/api/player/rejoin', (req, res) => {
     if (token === 'null') {
       return res.status(200).json({ message: 'No Token Provided' });
     };
-    console.log('rejoin token', token);
-    const player = new Player();
-    const playerData = player.rejoin(token);
-    console.log('rejoin playerData', playerData);
-    if (playerData && playerData !== null) return res.status(200).json(playerData);
+    console.log('reauth token', token);
+    const { player } = new Player({ token });
+    console.log('reauth player', player);
+    if (player) return res.status(200).json(player);
     return res.status(400).json({ message: 'Reauthorization Error' });
   }
   return res.status(401).json({ message: 'Invalid Session Token' });

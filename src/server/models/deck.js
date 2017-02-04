@@ -1,10 +1,13 @@
 // Models
+import Base from 'project/server/models/base';
 import Card from 'project/server/models/card';
 
 // Standard 52 Card Deck
-export default class Deck {
+export default class Deck extends Base {
+
   // Populate a deck with 52 cards when an instance of this class is created
   constructor() {
+    super();
     const { suits, ranks } = Card;
 
     // Generate a new card for this rank and suit and push it to the deck

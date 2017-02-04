@@ -74,9 +74,9 @@ export default class Store {
     return console.warn(message);
   }
 
-  async join(data) {
+  async auth(data) {
     const result = await this.send({
-      url: '/api/player/join',
+      url: '/api/player/auth',
       data,
     }).catch(log.error);
 
@@ -84,10 +84,10 @@ export default class Store {
     return this.createSession(result);
   }
 
-  async rejoin() {
+  async reauth() {
     // If a casino-session-token value already exists for this client, pass the token to the server and re-verify it over there, and return the updated token to the client and re-intiailize the session. Naturally in a real world situation things like token expiration and other edge cases would have to be handled, but this is fine for a code sample.
     const result = await this.send({
-      url: '/api/player/rejoin'
+      url: '/api/player/reauth'
     }).catch(log.error);
     return this.createSession(result);
   }

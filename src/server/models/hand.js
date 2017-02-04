@@ -1,13 +1,11 @@
-// NPM
-import { observable, action, computed, asMap } from 'mobx';
-
 // Models
+import Base from 'project/server/models/base';
 import Card from 'project/server/models/card';
 
 // A hand of filled with multiple cards.
-export default class Hand {
+export default class Hand extends Base {
   constructor() {
-    console.log('Hand');
+    super();
     this.cards = [];
   }
 

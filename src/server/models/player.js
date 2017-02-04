@@ -1,5 +1,6 @@
 // NPM
 import uuid from 'uuid';
+import scrypt from 'scrypt';
 import jwt from 'jsonwebtoken';
 
 // Project
@@ -8,38 +9,157 @@ import {
   SERVER_URL,
   SERVER_PORT,
 } from 'project/config/constants';
-import { players } from 'project/server/db';
+import Base from 'project/server/models/base';
 import Blackjack from 'project/server/models/games/blackjack';
 
-export default class Player {
-  find({ playerName }) {
-    const player = players.findOne({ name: playerName });
-    console.log('Player Find', players.data);
+// Encryption Settings
+const salt = new Buffer('NaCL');
+const settings = { N: 1024, r: 8, p: 16 };
 
-    // NOTE: We could easily extend the this.find logic to account for a player's password to get a *true* account system by storing the user's password sent from the client as an scrypted value in the collection (after having the password sent properly over HTTPS to prevent MITM attacks), and comparing the input password from the client with the encryped password stored in the database.
+export default class Player extends Base {
 
-    // That said, for the sake of brevity for the code sample and to emulate the "walk up and sit down" feel of a casino, we'll just create a JWT token for the player's name instead of their email, etc. and return that token to the client to be used as an authorization header for subsequent API requests.
+  constructor({
+    token,
+    playerName,
+    playerEmail,
+    playerPassword,
+  }) {
+    super({ collection: 'players' });
+    console.log('Player clone from DB based on ID', token, playerName, playerEmail, playerPassword);
 
-    // A very obvious exploit that comes about as a result of not using a password based account system for this code sample is that you'll be able to easily log in as another player by simply entering their name. That said, this is a code sample after all, so we have to draw a line somewhere in terms of functionality.
-    if (player) return this.createSession(player);
+    // Determine search method for finding player based on params passed into the Player constructor, this allows for simple player creation by simply instantiating the model with the right params passed into the constructor
+    if (token) {
+      const player = this.reauth({ token });
+      console.log('Reauth by Token', player);
+    } else if (playerName && playerEmail && playerPassword) {
+      // Authenticate the user normally if an email and password were provided
+      const player = this.auth({ playerName, playerEmail, playerPassword });
+    } else {
+      console.warn('Invalid properties passed to player constructor');
+    }
+  }
+
+  findById({ playerId }) {
+    const player = this.findOne({ playerId });
+    console.log('findById', playerId, player);
+    if (player) return player;
     return null;
   }
-  create({ playerName }) {
-    // Generate a uuid for the player for insertion into the DB
-    const id = uuid.v4();
 
-    players.insert({ id, name: playerName });
-    return this.find({ playerName });
-  }
-  join({ playerName }) {
-    // Find a player, if it exists. Otherwise create a new one
-    const player = this.find({ playerName });
+  findByEmail({ playerEmail }) {
+    const player = this.findOne({ playerEmail });
+    console.log('findByEmail', playerEmail, player);
     if (player) return player;
+    return null;
+  }
+
+  create({ playerName, playerEmail, playerPassword }) {
+    // Generate a uuid for the player for insertion into the DB
+    const playerId = uuid.v4();
+
+    const encrypted = this.encryptPassword({ playerPassword });
+    // Encrypt the user's password for storage in the DB
+    console.log('create', playerId, playerName, playerEmail, playerPassword, encrypted);
+
+    // Insert the data into the DB
+    const player = this.insertData({
+      playerId,
+      playerName,
+      playerEmail,
+      playerPassword: encrypted,
+    });
+
+    // Create a session for this player
+    return this.createSession(player);
+  }
+
+  auth({ playerName, playerEmail, playerPassword }) {
+    const player = this.findByEmail({ playerEmail });
+
+    // If a player for this email exists, attempt to log the player in
+    if (player) {
+      const { playerPassword: storedPassword } = player;
+      const matches = this.verifyPassword({ playerPassword, storedPassword });
+
+      // If password matches, go ahead and create a session for this user
+      if (matches) {
+        console.log('matches, createSession', matches);
+        return this.createSession(player);
+      }
+      console.warn('Incorrect Password');
+      return null;
+    }
 
     // If no player exists, insert a new one into the players collection
-    return this.create({ playerName });
+    return this.create({ playerName, playerEmail, playerPassword });
   }
-  rejoin(token) {
+
+  reauth({ token }) {
+    try {
+      const decoded = this.verifyToken(token);
+      console.log('decoded', decoded);
+
+      // Get the email from the decoded JWT token and fetch player by that (in a real world situation we would search by email instead of name to avoid same name collisions, but for the sake of a code sample searching by name will suffice just fine for a basic user account system)
+      const { playerId } = decoded;
+      const player = this.findById({ playerId });
+      return this.createSession(player);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  encryptPassword({ playerPassword }) {
+    const hashedPassword = scrypt.hashSync(playerPassword, settings, 64, salt);
+    const encrypted = hashedPassword.toString('hex');
+    return encrypted;
+  }
+
+  verifyPassword({ playerPassword, storedPassword }) {
+    const hashedPassword = scrypt.hashSync(playerPassword, settings, 64, salt);
+    const encrypted = hashedPassword.toString('hex');
+
+    console.log('compare', encrypted, storedPassword);
+
+    // If the encrypted password matches the stored password, then we know that the password is valid and we can successfully login the user.
+    if (encrypted === storedPassword) return true;
+    return false;
+  }
+
+  createSession(player) {
+    console.log('createSession', player);
+    const { playerId, playerEmail, playerName } = player;
+
+    // Create a jwt signed token for persisting the session on the client
+    const token = this.createToken(player);
+    console.log('token', token);
+
+    // Only return whitelisted player data back to the client
+    const payload = {
+      token,
+      user: { playerId, playerEmail, playerName },
+    };
+
+    console.log('payload', payload);
+    this.player = payload;
+    return this.player;
+  }
+
+  createToken(player) {
+    // Pick some values from the player for adding to the token payload
+    const { playerId } = player;
+    const token = jwt.sign(
+      { playerId },
+      FAKE_SERVER_SECRET_KEY,
+      {
+        expiresIn: '24h', // Have the key expire in 24 hours
+        audience: `${SERVER_URL}:${SERVER_PORT}/api`,
+        issuer: `${SERVER_URL}:${SERVER_PORT}`,
+      },
+    );
+    return token;
+  }
+
+  verifyToken(token) {
     try {
       // Decode the JWT token and verify that it's valid
       const decoded = jwt.verify(
@@ -52,44 +172,9 @@ export default class Player {
       );
 
       console.log('decoded', decoded);
-
-      // Get the Name from the decoded JWT token and fetch player by that (in a real world situation we would search by email instead of name to avoid same name collisions, but for the sake of a code sample searching by name will suffice just fine for a basic user account system)
-      const { name: playerName } = decoded;
-      return this.find({ playerName });
+      return decoded;
     } catch (err) {
       throw err;
     }
-  }
-  createSession(player) {
-    console.log('createSession', player);
-    const { id, name } = player;
-
-    // Create a jwt signed token for persisting the session on the client
-    const token = jwt.sign(
-      { id, name },
-      FAKE_SERVER_SECRET_KEY,
-      {
-        expiresIn: '24h', // Have the key expire in 24 hours
-        audience: `${SERVER_URL}:${SERVER_PORT}/api`,
-        issuer: `${SERVER_URL}:${SERVER_PORT}`,
-      },
-    );
-
-    console.log('token', token);
-
-    // Only return whitelisted player data back to the requester of the server if one exists, otherwise we return nothing.
-    const payload = {
-      token,
-      user: { id, name },
-    };
-
-    // Retrieve the latest game of blackjack that's being played by the player and return it as part of the user payload
-    const blackjack = new Blackjack();
-    const currentGame = blackjack.findCurrentGame({ playerId: id });
-    if (currentGame) {
-      payload.blackjack = currentGame.blackjack;
-    }
-
-    return payload;
   }
 }

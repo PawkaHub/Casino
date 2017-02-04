@@ -1,8 +1,11 @@
 // Libraries
 import { log } from 'libraries/utils';
 
+// Models
+import Base from 'project/server/models/base';
+
 // Standard Card Model
-export default class Card {
+export default class Card extends Base {
   static suits = [
     'c', // Clubs
     'd', // Diamonds
@@ -27,6 +30,7 @@ export default class Card {
   ]
 
   constructor(rank, suit) {
+    super();
     const { ranks, suits } = Card;
 
     // Ensure the rank is a valid one as defined above

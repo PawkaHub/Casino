@@ -1,18 +1,25 @@
 // NPM
 import uuid from 'uuid';
 
-// Project
-import { players, games } from 'project/server/db';
-
 // Models
+import Base from 'project/server/models/base';
 import Deck from 'project/server/models/deck';
 import Hand from 'project/server/models/hand';
 
 // For scoring, K, Q, J all count as 10. A can be 1 or 10 depending of what will the score closest to 21 will be without busting. Card suits don't matter.
-export default class Blackjack {
+export default class Blackjack extends Base {
+
+  constructor({ blackjackId, playerId }) {
+    super();
+    if (blackjackId) {
+      console.log('Populate state from blackjackId');
+    } else if (playerId) {
+      console.log('Populate state from playerId');
+    }
+  }
 
   // Win if card is blackjack
-  static WIN_CONDITION = 21
+  /* static WIN_CONDITION = 21
 
   // Lose if greater then 22 (bust)
   static LOSE_CONDITION = 22;
@@ -133,6 +140,7 @@ export default class Blackjack {
       playerId,
       playerBetAmount,
       finished: false,
+      deck: this.deck.cards,
       playerHand: this.playerHand.cards,
       dealerHand: this.dealerHand.cards,
     });
@@ -153,6 +161,13 @@ export default class Blackjack {
     // if (currentGame)
   }
 
+  stand() {
+    // Run out the dealer's hand until they hit their stand threshold
+    do {
+      this.hit(this.dealerHand);
+    } while (this.getHandScore(this.dealerHand) < Blackjack.DEALER_STAND);
+  }
+
   split() {
     console.log('split');
   }
@@ -166,7 +181,7 @@ export default class Blackjack {
 
     // If there's no game for this player, start a new one
     return this.newGame({ playerId, playerBetAmount });
-  }
+  }*/
 }
 
 /*

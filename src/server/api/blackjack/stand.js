@@ -8,8 +8,20 @@ import Hand from 'project/server/models/hand';
 const router = express.Router();
 
 export default router.post('/api/blackjack/stand', (req, res) => {
-  const { body } = req;
-  console.log('Api Stand Post Body', body);
+  const { body, auth } = req;
+  const { id: playerId } = auth;
+
+  const blackjack = new Blackjack();
+  const currentGame = blackjack.start({ playerId });
+  console.log('Api Stand Post Body', currentGame);
+
+  if (currentGame) {
+    blackjack.stand();
+    return res.status(200).json(currentGame);
+  }
+  return res.status(400).json({
+    message: 'You can not STAND at this time.',
+  });
 
   /* var session = req.session;
 
@@ -17,13 +29,6 @@ export default router.post('/api/blackjack/stand', (req, res) => {
   if (session.game === null) {
     res.status(400).json("{ message: STAND action is not available at this time }");
   } else {
-    var game = Game.clone(session.game);
-
-    //run out the rest of the dealer's hand
-    do {
-      game.dealerHand.hit(game.deck.draw());
-    } while (game.dealerHand.score() < Hand.DEALER_STAND);
-
     // game over. clear the game from the session
     req.session.game = null;
 

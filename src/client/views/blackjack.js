@@ -103,7 +103,6 @@ export default class Blackjack extends Component {
       );
     }
 
-
     let betEl = (
       <Form
         name='playerBet'
@@ -118,8 +117,6 @@ export default class Blackjack extends Component {
         <FormButton text='Place Bet' />
       </Form>
     );
-
-    let whateverEl = null;
 
     if (blackjack) {
       betEl = null;
