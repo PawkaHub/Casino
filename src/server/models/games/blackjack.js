@@ -34,13 +34,13 @@ export default class Blackjack extends Base {
 
   findCurrentGame({ playerId }) {
     const game = this.findOne({ playerId, finished: false });
-    console.log('findCurrentGame', game);
+    // console.log('findCurrentGame', game);
     if (game) return game;
     return null;
   }
 
   formatGameForClient(game) {
-    console.log('formatGameForClient', game);
+    // console.log('formatGameForClient', game);
     // We only return a whitelist of information that we want the client to actually see, instead of all the data available on the database. Things like dealerHand are not returned to the client.
     const {
       blackjackId,
@@ -49,20 +49,41 @@ export default class Blackjack extends Base {
       finished,
     } = game;
 
-    this.blackjack = {
-      blackjackId,
-      playerHand,
-      playerBetAmount,
-      finished,
+    // Save game to currentGame instance variable (so that we can easily update values that will be synced to the database)
+    this.currentGame = game;
+
+    this.data = {
+      blackjack: {
+        blackjackId,
+        playerHand,
+        playerBetAmount,
+        finished,
+      },
     };
 
-    return this.blackjack;
+    return this.data;
   }
 
   restoreGame({ playerId }) {
-    console.log('restoreGame', playerId);
+    // console.log('restoreGame', playerId);
     const game = this.findCurrentGame({ playerId });
-    if (game) return this.formatGameForClient(game);
+    // console.log('game restored', game);
+
+    // If a game does exist, rehydrate the game's state
+    if (game) {
+      const { deck, playerHand, dealerHand } = game;
+
+      // Rehydrate the deck
+      this.deck = new Deck(deck);
+
+      // Rehydrate the dealer's hand
+      this.dealerHand = new Hand(dealerHand);
+
+      // Rehydrate the player's hand
+      this.playerHand = new Hand(playerHand);
+
+      return this.formatGameForClient(game);
+    }
     return null;
   }
 
@@ -154,7 +175,8 @@ export default class Blackjack extends Base {
   hit(hand) {
     const card = this.deck.draw();
     console.log('hit', card.toString());
-    return hand.add(card);
+    const newHand = hand.add(card);
+    console.log('newHand', newHand);
   }
 
   deal() {
@@ -171,6 +193,10 @@ export default class Blackjack extends Base {
 
   split() {
     console.log('split');
+  }
+
+  surrender() {
+    console.log('surrender');
   }
 }
 

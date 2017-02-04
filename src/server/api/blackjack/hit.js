@@ -8,8 +8,22 @@ import Hand from 'project/server/models/hand';
 const router = express.Router();
 
 export default router.post('/api/blackjack/hit', (req, res) => {
-  const { body } = req;
-  console.log('Api Hit Post Body', body);
+  const { body, auth } = req;
+  const { playerId } = auth;
+
+  // Initialize a game of blackjack for this player, and hit their hand
+  const game = new Blackjack({ playerId });
+
+  // Hit
+  game.hit(game.playerHand);
+  const { data } = game;
+
+  console.log('DECK:');
+  console.log(game.deck.cards);
+  console.log('PLAYER HAND:');
+  console.log(game.playerHand.cards);
+  console.log('DEALER HAND:');
+  console.log(game.dealerHand.cards);
 
   /* var session = req.session;
 

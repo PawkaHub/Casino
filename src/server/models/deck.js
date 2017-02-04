@@ -5,18 +5,32 @@ import Card from 'project/server/models/card';
 // Standard 52 Card Deck
 export default class Deck extends Base {
 
-  // Populate a deck with 52 cards when an instance of this class is created
-  constructor() {
+  constructor(cards) {
     super();
-    const { suits, ranks } = Card;
+    // If an array of cards is passed into the constructor, initialize the deck with these cards instead of the usual default deck of 52 cards
+    this.cards = this.populateDeck(cards);
+    // console.log('Deck Initialized', this.cards);
+  }
+
+  // Allows for default population of a standard deck of 52 cards
+  populateDeck(cards) {
+    // Hydrate cards if it's been passed in
+    if (cards) return this.hydrateDeck(cards);
 
     // Generate a new card for this rank and suit and push it to the deck
-    this.cards = suits.reduce((memo, suit) => {
+    const { suits, ranks } = Card;
+    return suits.reduce((memo, suit) => {
       ranks.forEach((rank) => memo.push(new Card(rank, suit)));
       return memo;
     }, []);
+  }
 
-    console.log('Deck', this.cards);
+  hydrateDeck(cards) {
+    return cards.reduce((memo, card) => {
+      const { rank, suit } = card;
+      memo.push(new Card(rank, suit));
+      return memo;
+    }, []);
   }
 
   // Draw a card off the top of the deck

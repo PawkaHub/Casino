@@ -40,11 +40,11 @@ export default class Base {
     console.log('updateData', this.collection, collection, data);
   }
 
-  removeData(collection, data) {
+  /* removeData(collection, data) {
     console.log('removeData', this.collection, collection, data);
   }
 
   saveData(collection) {
     console.log('saveData', this.collection, collection);
-  }
+  }*/
 }

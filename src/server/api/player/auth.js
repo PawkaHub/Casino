@@ -14,9 +14,10 @@ export default router.post('/api/player/auth', (req, res) => {
   const { body } = req;
 
   // Initialize a new player model
-  const { player } = new Player(body);
-  console.log('auth player', player);
+  const player = new Player(body);
+  const { data } = player;
+  // console.log('auth player', data);
 
-  if (player) return res.status(200).json(player);
+  if (data) return res.status(200).json(data);
   return res.status(400).json({ message: 'Error Authorizing Player.' });
 });

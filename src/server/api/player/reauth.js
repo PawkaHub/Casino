@@ -20,10 +20,11 @@ export default router.post('/api/player/reauth', (req, res) => {
     if (token === 'null') {
       return res.status(200).json({ message: 'No Token Provided' });
     };
-    console.log('reauth token', token);
-    const { player } = new Player({ token });
-    console.log('reauth player', player);
-    if (player) return res.status(200).json(player);
+    // console.log('reauth token', token);
+    const player = new Player({ token });
+    const { data } = player;
+    // console.log('reauth player', data);
+    if (data) return res.status(200).json(data);
     return res.status(400).json({ message: 'Reauthorization Error' });
   }
   return res.status(401).json({ message: 'Invalid Session Token' });

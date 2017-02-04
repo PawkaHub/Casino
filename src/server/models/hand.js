@@ -4,14 +4,35 @@ import Card from 'project/server/models/card';
 
 // A hand of filled with multiple cards.
 export default class Hand extends Base {
-  constructor() {
+  constructor(cards) {
     super();
-    this.cards = [];
+    // If an array of cards is passed into the constructor, create the hand with these cards instead of the usual default of an empty deck of cards
+    this.cards = this.populateHand(cards);
+    // console.log('Hand initialized', this.cards);
+  }
+
+  // Allows for default population of a empty hand
+  populateHand(cards) {
+    // Hydrate cards if it's been passed in
+    if (cards) return this.hydrateHand(cards);
+    return [];
+  }
+
+  // Hydrates a hand with prepopulated set of cards
+  hydrateHand(cards) {
+    return cards.reduce((memo, card) => {
+      const { rank, suit } = card;
+      memo.push(new Card(rank, suit));
+      return memo;
+    }, []);
   }
 
   add(card) {
     // Add cards to a hand
-    if (card instanceof Card) return this.cards.push(card);
+    if (card instanceof Card) {
+      this.cards.push(card);
+      return this.cards;
+    }
     return console.error('Can only add a card to a hand');
   }
 

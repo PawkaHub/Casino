@@ -20,7 +20,7 @@ export default router.all('/api/*', jwtMiddleware({
   requestProperty: 'auth',
 }), (req, res, next) => {
   const { auth } = req;
-  console.log('api auth', auth);
+  // console.log('api auth', auth);
   // If the jwt was successfully verified and an auth property is set on the request object, we know that the user login is valid and we can proceed with making the appropriate API calls as a trusted user
   if (!auth) return res.sendStatus(401);
   next();
