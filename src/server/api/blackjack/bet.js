@@ -10,26 +10,17 @@ const router = express.Router();
 export default router.post('/api/blackjack/bet', (req, res) => {
   const { body, auth } = req;
   const { playerBetAmount } = body;
-  const { id: playerId } = auth;
+  const { playerId } = auth;
 
-  const blackjack = new Blackjack();
-  const currentGame = blackjack.start({ playerId, playerBetAmount });
-  console.log('Api Bet Post Body', currentGame);
+  const game = new Blackjack({ playerId, playerBetAmount });
+  const { blackjack } = game;
+  console.log('Api Bet Post Body', blackjack);
 
   // If a current game already exists, return it accordingly. Otherwise error
-  if (currentGame) return res.status(200).json(currentGame);
+  if (blackjack) return res.status(200).json({ blackjack });
   return res.status(400).json({
     message: 'You cannot start a new game of Blackjack when one is already in progress.',
   });
-
-  /* if (session.game) {
-    res.status(400).json({
-      message: 'You cannot start a new game of Blackjack when one is already in progress.',
-    });
-  } else {
-    const { bed } = body;
-    const game = new Game({ bed });
-  }*/
 
   /* var session = req.session;
 

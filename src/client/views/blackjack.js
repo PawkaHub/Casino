@@ -31,6 +31,12 @@ export default class Blackjack extends Component {
       lineHeight: '32px',
       textAlign: 'center',
     },
+    footer: {
+      position: 'absolute',
+      right: '0',
+      bottom: '0',
+      left: '0',
+    },
   }
 
   @action hit = () => {
@@ -93,12 +99,12 @@ export default class Blackjack extends Component {
     let boardEl = (<Lobby />);
 
     if (user) {
-      const { id, name } = user;
+      const { playerId, playerName } = user;
       boardEl = null;
       userEl = (
         <div>
-          <div>ID: {id}</div>
-          <div>Name: {name}</div>
+          <div>ID: {playerId}</div>
+          <div>Name: {playerName}</div>
         </div>
       );
     }
@@ -133,13 +139,16 @@ export default class Blackjack extends Component {
         <div>
           <div>BIG BAD DEALER HAND UP HERE</div>
           <div>Bet Amount: {playerBetAmount}</div>
-          <div>Finished: {finished}</div>
+          <div>Finished: {finished ? 'Yes' : 'No'}</div>
           <div>Player Hand: {cards}</div>
-          <div onClick={this.hit}>Hit</div>
-          <div onClick={this.stand}>Stand</div>
-          <div onClick={this.doubleDown}>Double Down</div>
-          <div onClick={this.split}>Split</div>
-          <div onClick={this.surrender}>Surrender</div>
+
+          <div style={style.footer}>
+            <div onClick={this.hit}>Hit</div>
+            <div onClick={this.stand}>Stand</div>
+            <div onClick={this.doubleDown}>Double Down</div>
+            <div onClick={this.split}>Split</div>
+            <div onClick={this.surrender}>Surrender</div>
+          </div>
         </div>
       );
     }

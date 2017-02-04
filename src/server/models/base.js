@@ -21,11 +21,12 @@ export default class Base {
   }
 
   find(data) {
-    console.log('find', this.collection, data);
+    // console.log('find', this.collection, data);
+    return this.collection.find(data);
   }
 
   findOne(data) {
-    console.log('findOne', this.collection.data);
+    // console.log('findOne', this.collection.data);
     return this.collection.findOne(data);
   }
 

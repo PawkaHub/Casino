@@ -9,39 +9,105 @@ import Hand from 'project/server/models/hand';
 // For scoring, K, Q, J all count as 10. A can be 1 or 10 depending of what will the score closest to 21 will be without busting. Card suits don't matter.
 export default class Blackjack extends Base {
 
-  constructor({ blackjackId, playerId }) {
-    super();
-    if (blackjackId) {
-      console.log('Populate state from blackjackId');
-    } else if (playerId) {
-      console.log('Populate state from playerId');
+  constructor({ playerId, playerBetAmount }) {
+    // Connect to DB Adapter for games collection
+    super({ collection: 'games' });
+
+    // If a blackjackId is passed in for this game of blackjack, populate the class instance data with data that is fetched from the database.
+    if (playerId && !playerBetAmount) {
+      console.log('Resume current game of blackjack');
+      this.restoreGame({ playerId });
+    } else if (playerId && playerBetAmount) {
+      console.log('Start a new game of blackjack');
+      this.startGame({ playerId, playerBetAmount });
     }
   }
 
   // Win if card is blackjack
-  /* static WIN_CONDITION = 21
+  static WIN_CONDITION = 21;
 
   // Lose if greater then 22 (bust)
   static LOSE_CONDITION = 22;
 
   // Deal will stand on 17
-  static STAND_CONDITION = 17
+  static STAND_CONDITION = 17;
 
-  // Blackjack beats any hand that is not a blackjack, including 21
-  isBlackjack(hand) {
-    const score = this.getHandScore(hand);
-    console.log('isBlackjack', score, hand);
-    return score === Blackjack.WIN_CONDITION && hand.cards.length === 2;
+  findCurrentGame({ playerId }) {
+    const game = this.findOne({ playerId, finished: false });
+    console.log('findCurrentGame', game);
+    if (game) return game;
+    return null;
   }
 
-  // Determine if the hand has gone over 21
-  isBust(hand) {
-    const score = this.getHandScore(hand);
-    console.log('isBust', score, hand);
-    return score >= Blackjack.LOSE_CONDITION;
+  formatGameForClient(game) {
+    console.log('formatGameForClient', game);
+    // We only return a whitelist of information that we want the client to actually see, instead of all the data available on the database. Things like dealerHand are not returned to the client.
+    const {
+      blackjackId,
+      playerHand,
+      playerBetAmount,
+      finished,
+    } = game;
+
+    this.blackjack = {
+      blackjackId,
+      playerHand,
+      playerBetAmount,
+      finished,
+    };
+
+    return this.blackjack;
   }
 
-  // Adds up the values of cards in the current hand. Accounts for A being 1 or 11.
+  restoreGame({ playerId }) {
+    console.log('restoreGame', playerId);
+    const game = this.findCurrentGame({ playerId });
+    if (game) return this.formatGameForClient(game);
+    return null;
+  }
+
+  startGame({ playerId, playerBetAmount }) {
+    console.log('newGame', playerId, playerBetAmount);
+
+    // Create a deck to draw cards from
+    this.deck = new Deck();
+
+    // Shuffle the deck
+    this.deck.shuffle();
+
+    // Create hands for the player and the dealer
+    this.dealerHand = new Hand();
+    this.playerHand = new Hand();
+
+    // Deal one card to the dealer
+    this.hit(this.dealerHand);
+
+    // Output dealerHand
+    console.log('dealerHand', this.getHandScore(this.dealerHand));
+
+    // Deal two cards to the player
+    this.hit(this.playerHand);
+    this.hit(this.playerHand);
+
+    // Output playerHand
+    console.log('playerHand', this.getHandScore(this.playerHand));
+
+    // Insert the game into the DB
+    const blackjackId = uuid.v4();
+    const game = this.insertData({
+      blackjackId,
+      playerId,
+      playerBetAmount,
+      finished: false,
+      deck: this.deck.cards,
+      playerHand: this.playerHand.cards,
+      dealerHand: this.dealerHand.cards,
+    });
+
+    return this.formatGameForClient(game);
+  }
+
+  // Adds up the values of cards in the hand. Accounts for A being 1 or 11.
   getHandScore(hand) {
     console.log('getHandScore', hand);
     let score = 0;
@@ -71,81 +137,18 @@ export default class Blackjack extends Base {
     return score;
   }
 
-  // Find any games a player may currently be involved in
-  findCurrentGame({ playerId }) {
-    const game = games.findOne({ playerId, finished: false });
-    console.log('findCurrentGame', games.data);
-    if (game) return this.formatGameForClient(game);
-    return null;
+  // Blackjack beats any hand that is not a blackjack, including 21
+  isBlackjack(hand) {
+    const score = this.getHandScore(hand);
+    console.log('isBlackjack', score, hand);
+    return score === Blackjack.WIN_CONDITION && hand.cards.length === 2;
   }
 
-  // Find any games that may exist for this ID, regardless of whether they're finished or not
-  findGameById({ id }) {
-    const game = games.findOne({ id });
-    console.log('findGameById', game);
-    if (game) return this.formatGameForClient(game);
-    return null;
-  }
-
-  formatGameForClient(game) {
-    // We only return a whitelist of information that we want the client to actually see, instead of all the data available on the database. Things like dealerHand are not returned to the client.
-    const {
-      id,
-      playerHand,
-      playerBetAmount,
-      finished,
-    } = game;
-
-    return {
-      blackjack: {
-        id,
-        playerHand,
-        playerBetAmount,
-        finished,
-      },
-    }
-  }
-
-  // Create a new game for this player
-  newGame({ playerId, playerBetAmount }) {
-    console.log('Starting a new game...');
-
-    // Create a deck to draw cards from
-    this.deck = new Deck();
-
-    // Shuffle the deck
-    this.deck.shuffle();
-
-    // Create hands for the player and the dealer
-    this.dealerHand = new Hand();
-    this.playerHand = new Hand();
-
-    // Deal one card to the dealer
-    this.hit(this.dealerHand);
-
-    // Output dealerHand
-    console.log('dealerHand', this.getHandScore(this.dealerHand));
-
-    // Deal two cards to the player
-    this.hit(this.playerHand);
-    this.hit(this.playerHand);
-
-    // Output playerHand
-    console.log('playerHand', this.getHandScore(this.playerHand));
-
-    // Persist the new game to the database
-    const id = uuid.v4();
-    games.insert({
-      id,
-      playerId,
-      playerBetAmount,
-      finished: false,
-      deck: this.deck.cards,
-      playerHand: this.playerHand.cards,
-      dealerHand: this.dealerHand.cards,
-    });
-
-    return this.findGameById({ id });
+  // Determine if the hand has gone over 21
+  isBust(hand) {
+    const score = this.getHandScore(hand);
+    console.log('isBust', score, hand);
+    return score >= Blackjack.LOSE_CONDITION;
   }
 
   hit(hand) {
@@ -156,13 +159,11 @@ export default class Blackjack extends Base {
 
   deal() {
     console.log('deal');
-    // Don't allow a new deal to be placed if the current game already has hands dealt out
-    // const currentGame = this.findCurrentGame({ playerId });
-    // if (currentGame)
   }
 
   stand() {
     // Run out the dealer's hand until they hit their stand threshold
+    console.log('stand');
     do {
       this.hit(this.dealerHand);
     } while (this.getHandScore(this.dealerHand) < Blackjack.DEALER_STAND);
@@ -171,17 +172,6 @@ export default class Blackjack extends Base {
   split() {
     console.log('split');
   }
-
-  // Either start a new game for the player, or resume a currently in progress game that the player hasn't seen to completion yet
-  start({ playerId, playerBetAmount }) {
-    console.log('start', playerId, playerBetAmount);
-    // Check if there's currently a game of blackjack started for this player
-    const currentGame = this.findCurrentGame({ playerId });
-    if (currentGame) return currentGame;
-
-    // If there's no game for this player, start a new one
-    return this.newGame({ playerId, playerBetAmount });
-  }*/
 }
 
 /*

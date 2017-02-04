@@ -69,6 +69,8 @@ export default class Store {
     const result = await this.send({ url: '/api/blackjack/bet', data }).catch(log.error);
     const { blackjack, message } = result;
 
+    console.log('bet result', result);
+
     // Write server data to local store
     if (blackjack) return this.set('blackjack', asMap(blackjack));
     return console.warn(message);

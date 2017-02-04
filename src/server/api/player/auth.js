@@ -12,6 +12,8 @@ const router = express.Router();
 // Allow for a new player instance to be created, and for a lobby to be joined
 export default router.post('/api/player/auth', (req, res) => {
   const { body } = req;
+
+  // Initialize a new player model
   const { player } = new Player(body);
   console.log('auth player', player);
 

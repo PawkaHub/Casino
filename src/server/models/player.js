@@ -24,8 +24,8 @@ export default class Player extends Base {
     playerEmail,
     playerPassword,
   }) {
+    // Connect to DB adapter for players collection
     super({ collection: 'players' });
-    console.log('Player clone from DB based on ID', token, playerName, playerEmail, playerPassword);
 
     // Determine search method for finding player based on params passed into the Player constructor, this allows for simple player creation by simply instantiating the model with the right params passed into the constructor
     if (token) {
@@ -139,7 +139,12 @@ export default class Player extends Base {
       user: { playerId, playerEmail, playerName },
     };
 
+    // Retrieve the latest game of blackjack that's being played by the player and return it as part of the user payload, if there is any game at all.
+    const { blackjack } = new Blackjack({ playerId });
+    if (blackjack) { payload.blackjack = blackjack }
+
     console.log('payload', payload);
+    // Here is where we finally set the player's instance data for the class, as fetched from the database.
     this.player = payload;
     return this.player;
   }
