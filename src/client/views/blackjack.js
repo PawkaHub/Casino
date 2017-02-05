@@ -21,6 +21,7 @@ export default class Blackjack extends Component {
     wrapper: {
       position: 'relative',
       height: '100vh',
+      overflow: 'hidden',
       color: white(),
       ...cover('https://mxg.cdnbf.net/mexchangeblackjack/turbo/assets/gameView/tableBackground.png?v1.26-245'),
     },

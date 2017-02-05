@@ -47,8 +47,11 @@ export default class Blackjack extends Base {
       playerHand,
       dealerHand,
       playerBetAmount,
+      payout,
       finished,
     } = game;
+
+    // this.currentGame = game;
 
     this.data = {
       blackjack: {
@@ -56,6 +59,7 @@ export default class Blackjack extends Base {
         playerHand,
         dealerHand,
         playerBetAmount,
+        payout,
         finished,
       },
     };
@@ -70,7 +74,13 @@ export default class Blackjack extends Base {
 
     // If a game does exist, rehydrate the game's state
     if (game) {
-      const { deck, playerHand, dealerHand } = game;
+      const { playerBetAmount, finished, deck, dealerHand, playerHand } = game;
+
+      // Rehydrate the player bet
+      this.playerBetAmount = playerBetAmount;
+
+      // Rehydrate game state
+      this.finished = finished;
 
       // Rehydrate the deck
       this.deck = new Deck(deck);
@@ -89,18 +99,24 @@ export default class Blackjack extends Base {
   startGame({ playerId, playerBetAmount }) {
     console.log('newGame', playerId, playerBetAmount);
 
+    /* this.currentGame = {
+      deck: new Deck(),
+      dealerHand: new Hand(),
+      playerHand: new Hand(),
+    };*/
+
     // Create a deck to draw cards from
-    this.deck = new Deck();
+    // this.deck = new Deck();
 
     // Shuffle the deck
-    this.deck.shuffle();
+    this.currentGame.deck.shuffle();
 
     // Create hands for the player and the dealer
-    this.dealerHand = new Hand();
-    this.playerHand = new Hand();
+    // this.dealerHand = new Hand();
+    // this.playerHand = new Hand();
 
     // Deal one card to the dealer
-    this.hit(this.dealerHand);
+    this.hit(this.currentGame.dealerHand);
 
     // Output dealerHand
     console.log('dealerHand', this.getHandScore(this.dealerHand));
@@ -118,13 +134,18 @@ export default class Blackjack extends Base {
       blackjackId,
       playerId,
       playerBetAmount,
-      finished: false,
+      finished: this.finished,
+      payout: 0,
       deck: this.deck.cards,
       playerHand: this.playerHand.cards,
       dealerHand: this.dealerHand.cards,
     });
 
     return this.formatGameForClient(game);
+  }
+
+  finishGame() {
+
   }
 
   // Adds up the values of cards in the hand. Accounts for A being 1 or 11.
@@ -173,14 +194,16 @@ export default class Blackjack extends Base {
 
   hit(hand) {
     const card = this.deck.draw();
-    // console.log('hit', card.toString());
     hand.add(card);
     return card;
   }
 
   stand() {
     // Run out the dealer's hand until they hit their stand threshold
-    console.log('stand');
+    return this.runOut();
+  }
+
+  runOut() {
     do {
       this.hit(this.dealerHand);
       return this.dealerHand.cards;
@@ -188,7 +211,17 @@ export default class Blackjack extends Base {
   }
 
   doubleDown() {
-    console.log('doubleDown');
+    console.log('doubleDown', this.playerBetAmount);
+
+    // Double the player's bet and hits one final time
+    this.playerBetAmount = this.playerBetAmount * 2;
+    this.hit(this.playerHand);
+
+    // Run out the rest of the dealer's hand
+    this.runOut();
+
+    // Game is over. Clear the game from the session
+    this.currentGame.finished = true;
   }
 
   split() {
@@ -196,6 +229,12 @@ export default class Blackjack extends Base {
   }
 
   surrender() {
-    console.log('surrender');
+    console.log('surrender', this.finished);
+
+
+    // Player reclaims half their bet when surrendering
+    const payout = this.playerBetAmount / 2;
+    console.log('payut', payout);
+    this.currentGame.finished = true;
   }
 }
