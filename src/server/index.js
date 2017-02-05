@@ -13,7 +13,6 @@ import bet from 'project/server/api/blackjack/bet';
 import hit from 'project/server/api/blackjack/hit';
 import stand from 'project/server/api/blackjack/stand';
 import doubledown from 'project/server/api/blackjack/doubledown';
-import split from 'project/server/api/blackjack/split';
 import surrender from 'project/server/api/blackjack/surrender';
 
 // API Router
@@ -31,7 +30,6 @@ router.use(bet);
 router.use(hit);
 router.use(stand);
 router.use(doubledown);
-router.use(split);
 router.use(surrender);
 
 export default router;

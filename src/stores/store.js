@@ -131,14 +131,6 @@ export default class Store {
     return this.handleGameState(result);
   }
 
-  async split() {
-    const result = await this.send({
-      url: '/api/blackjack/split',
-    }).catch(log.error);
-
-    console.log('split result', result);
-  }
-
   async surrender() {
     const result = await this.send({
       url: '/api/blackjack/surrender',

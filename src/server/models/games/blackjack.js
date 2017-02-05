@@ -65,7 +65,7 @@ export default class Blackjack extends Base {
         playerBetAmount,
         finished,
         payout,
-        deck: deck.cards,
+        // deck: deck.cards,
         dealerHand: dealerHand.cards,
         playerHand: playerHand.cards,
       },
@@ -195,8 +195,9 @@ export default class Blackjack extends Base {
   }
 
   runOut() {
+    const { currentGame } = this;
+
     do {
-      const { currentGame } = this;
       this.hit(currentGame.dealerHand);
       return currentGame.dealerHand.cards;
     } while (
@@ -220,10 +221,6 @@ export default class Blackjack extends Base {
 
     // Finish the game
     return this.finishGame();
-  }
-
-  split() {
-    console.log('split');
   }
 
   surrender() {

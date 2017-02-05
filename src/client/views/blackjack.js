@@ -61,11 +61,6 @@ export default class Blackjack extends Component {
     store.doubleDown();
   }
 
-  @action split = () => {
-    const { store } = this.props;
-    store.split();
-  }
-
   @action surrender = () => {
     const { store } = this.props;
     store.surrender();
@@ -128,7 +123,7 @@ export default class Blackjack extends Component {
           name='playerBetAmount'
           placeholder='Bet Amount'
         />
-        <FormButton text='Place Bet' />
+        <FormButton text='Start New Game' />
       </Form>
     );
 
@@ -177,7 +172,6 @@ export default class Blackjack extends Component {
             <div onClick={this.hit}>Hit</div>
             <div onClick={this.stand}>Stand</div>
             <div onClick={this.doubleDown}>Double Down</div>
-            <div onClick={this.split}>Split</div>
             <div onClick={this.surrender}>Surrender</div>
           </div>
         </div>
