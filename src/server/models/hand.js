@@ -8,8 +8,6 @@ export default class Hand extends Base {
     super();
     // If an array of cards is passed into the constructor, create the hand with these cards instead of the usual default of an empty deck of cards
     this.cards = this.populateHand(cards);
-    // this.cards = cards;
-    console.log('Hand initialized', this.cards, cards);
   }
 
   // Allows for default population of a empty hand

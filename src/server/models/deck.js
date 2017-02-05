@@ -9,7 +9,6 @@ export default class Deck extends Base {
     super();
     // If an array of cards is passed into the constructor, initialize the deck with these cards instead of the usual default deck of 52 cards
     this.cards = this.populateDeck(cards);
-    // console.log('Deck Initialized', this.cards);
   }
 
   // Allows for default population of a standard deck of 52 cards
@@ -57,7 +56,7 @@ export default class Deck extends Base {
       cards[randomIndex] = currentCard;
     }
 
-    console.log('shuffle', this.cards);
+    // console.log('shuffle', this.cards);
     return this.cards;
   }
 }

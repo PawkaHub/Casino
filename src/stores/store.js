@@ -13,6 +13,10 @@ export default class Store {
     return this.showData();
   }
 
+  get(key) {
+    return this.data.get(key);
+  }
+
   showData() {
     return mobx.toJS(this.data);
   }
@@ -84,7 +88,11 @@ export default class Store {
   }
 
   async bet(data) {
-    const result = await this.send({ url: '/api/blackjack/bet', data }).catch(log.error);
+    const result = await this.send({
+      url: '/api/blackjack/bet',
+      data,
+    }).catch(log.error);
+
     const { blackjack, message } = result;
 
     console.log('bet result', result);
@@ -95,10 +103,18 @@ export default class Store {
   }
 
   async hit(data) {
-    return await this.send({
+    const result = await this.send({
       url: '/api/blackjack/hit',
       data,
     }).catch(log.error);
+
+    const { card, message } = result;
+
+    console.log('hit result', result);
+
+    // Write server data to local store
+    if (card) return this.get('blackjack').get('playerHand').push(card);
+    return console.warn(message);
   }
 
   async stand(data) {
