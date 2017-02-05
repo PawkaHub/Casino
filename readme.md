@@ -3,7 +3,7 @@
 
 2.) Showcase modularity of code and implementation of architecture that would easily allow for the addition of new game modes with little effort.
 
-3.) Showcase a small sampling of front end design skills.
+3.) Showcase a small sampling of front end design skills, as well as provide a code sample that highlights the difference between implementing an application in mobx vs redux, to serve as a potential further discussion point.
 
 ### Running The Code Sample
 
