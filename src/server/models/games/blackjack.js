@@ -65,6 +65,9 @@ export default class Blackjack extends Base {
 
     console.log('getState', playerHand.cards, dealerHand.cards);
 
+    // Get available actions that the player can use
+    const actions = this.getAvailableActions();
+
     this.state = {
       blackjack: {
         blackjackId,
@@ -75,6 +78,7 @@ export default class Blackjack extends Base {
         finished,
         outcome,
         payout,
+        actions,
         // deck: deck.cards,
         dealerHand: dealerHand.cards,
         playerHand: playerHand.cards,
@@ -187,30 +191,41 @@ export default class Blackjack extends Base {
 
   getAvailableActions() {
     const { currentGame } = this;
-    console.log('getAvailableActions', currentGame);
-    // XXX: Coordinates with gameState and rules logic to determine available actions for the player
 
+    // Only return actions that the player is actually able to do based on the current context of the game back to the client.
     const actions = [];
 
-    /* var gamestate = "Player shows " + this.playerHand.toString() + " (" + this.playerHand.score() + "). " +
-            "Dealer shows " + this.dealerHand.toString() + " (" + this.dealerHand.score() + "). ";
+    // Fetched from current game state
+    const { playerHand, dealerHand, finished } = currentGame;
+    const { WIN_CONDITION } = Blackjack;
 
-    var availableActions = [];
+    console.log('Check', dealerHand.count());
 
-    if (!this.playerHand.isBust() && this.dealerHand.cards.length === 1) {
-      if (this.playerHand.score() < 21) {
-        availableActions.push('hit');
+    // Actions are only available if a game is in progress
+    if (!finished) {
+
+      // Relevant values used for calculating available actions
+      const playerBust = this.isBust(playerHand);
+      const playerScore = this.getHandScore(playerHand);
+
+      // Players can only hit if their score is under 21
+      if (playerScore < WIN_CONDITION) {
+        actions.push('hit');
       }
-      if (this.playerHand.cards.length === 2 && this.dealerHand.cards.length === 1) {
-        availableActions.push('doubledown');
-      }
-      availableActions.push('stand');
 
-      gamestate += " Available actions: " + availableActions;
+      // Players can only doubledown and surrender at the start of the game
+      if (playerHand.count() === 2 && dealerHand.count() === 1) {
+        actions.push('doubleDown');
+        actions.push('surrender');
+      }
+
+      // Players can always stand
+      actions.push('stand');
     }
 
-    return gamestate;
-    */
+    console.log('final actions', actions);
+
+    return actions;
   }
 
   restoreGame({ playerId }) {
@@ -348,6 +363,7 @@ export default class Blackjack extends Base {
 
   hit(hand) {
     const { currentGame } = this;
+    if (!currentGame || currentGame.finished) return console.error(`Hit can't be used when no game is in progress`);
     const card = currentGame.deck.draw();
     hand.add(card);
 
@@ -357,6 +373,8 @@ export default class Blackjack extends Base {
   }
 
   stand() {
+    const { currentGame } = this;
+    if (!currentGame || currentGame.finished) return console.error(`Stand can't be used when no game is in progress`);
     // Play out the dealer's hand until they hit their stand threshold
     this.playOut();
 
@@ -368,6 +386,7 @@ export default class Blackjack extends Base {
 
   playOut() {
     const { currentGame } = this;
+    if (!currentGame || currentGame.finished) return console.error(`Play Outs can't happen when no game is in progress`);
 
     do {
       this.hit(currentGame.dealerHand);
@@ -379,6 +398,8 @@ export default class Blackjack extends Base {
 
   doubleDown() {
     const { currentGame } = this;
+    // Can only be done if a game is in progress
+    if (!currentGame || currentGame.finished) return console.error(`Doubledown can't be used when no game is in progress`);
 
     // Double the player's bet and hit their hand one final time
     currentGame.playerBetAmount = currentGame.playerBetAmount * 2;
@@ -391,6 +412,7 @@ export default class Blackjack extends Base {
   surrender() {
     // Get currentGame for this instance
     const { currentGame } = this;
+    if (!currentGame || currentGame.finished) return console.error(`Surrender can't be used when no game is in progress`);
 
     // Player reclaims half their bet when surrendering
     const payout = currentGame.playerBetAmount / 2;

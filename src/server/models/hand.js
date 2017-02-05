@@ -35,6 +35,10 @@ export default class Hand extends Base {
     return console.error('Can only add a card to a hand');
   }
 
+  count() {
+    return this.cards.length;
+  }
+
   toString() {
     // Outputs what the readable cards for a hand are
     return this.cards.reduce((memo, card) => {

@@ -139,13 +139,17 @@ export default class Blackjack extends Component {
     }
 
     if (blackjack) {
-      const { finished, outcome, payout, playerBetAmount, playerScore, dealerScore, dealerHand, playerHand } = blackjack;
+      const { finished, actions, outcome, payout, playerBetAmount, playerScore, dealerScore, dealerHand, playerHand } = blackjack;
 
       const dealerCards = dealerHand.map((card, index) => {
         const { rank, suit } = card;
         return (
           <div key={`dealer-card-${index}`}>Dealer Card: {rank}{suit}</div>
         );
+      });
+
+      const activeActions = actions.map((action, index) => {
+        return (<div key={`action-${index}`} onClick={this[action]}>{action}</div>);
       });
 
       const playerCards = playerHand.map((card, index) => {
@@ -183,10 +187,8 @@ export default class Blackjack extends Component {
           <div>Player Score {playerScore}</div>
 
           <div style={style.footer}>
-            <div onClick={this.hit}>Hit</div>
-            <div onClick={this.stand}>Stand</div>
-            <div onClick={this.doubleDown}>Double Down</div>
-            <div onClick={this.surrender}>Surrender</div>
+            <div>Active Actions Test:</div>
+            {activeActions}
           </div>
         </div>
       );
