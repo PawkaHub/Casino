@@ -30,7 +30,7 @@ npm run serve
 5) Server should now be running on [http://localhost:1234](http://localhost:1234), go ahead and log in with whatever email, name and password you want (an account will be created automatically for you) and play as many games of Blackjack as you like!
 
 ### Real World Improvements
-In a real world example, some of the following improvements would have to be be added to the code sample that were left out for the sake of time and brevity. There are certainly more improvements that would have to be done than the ones listed below, but it's worth highlighting some of them to demonstrate that they've been thought of.
+In a real world example, some of the following improvements would have to be be added to the code sample that were left out for the sake of time and brevity. There are certainly more improvements that would have to be done beyond just the ones listed below, but it's worth highlighting some of them to demonstrate that they've been thought of.
 
 1.) Unit Tests
 
