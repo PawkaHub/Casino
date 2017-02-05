@@ -57,17 +57,17 @@ export default class Blackjack extends Component {
 
   @action doubleDown = () => {
     const { store } = this.props;
-    store.doubleDown({ hello: 'doubleDown' });
+    store.doubleDown();
   }
 
   @action split = () => {
     const { store } = this.props;
-    store.split({ hello: 'split' });
+    store.split();
   }
 
   @action surrender = () => {
     const { store } = this.props;
-    store.surrender({ hello: 'surrender' });
+    store.surrender();
   }
 
   @observable message = 'Place Bet'

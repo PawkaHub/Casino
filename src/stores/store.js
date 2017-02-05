@@ -102,10 +102,9 @@ export default class Store {
     return console.warn(message);
   }
 
-  async hit(data) {
+  async hit() {
     const result = await this.send({
       url: '/api/blackjack/hit',
-      data,
     }).catch(log.error);
 
     const { card, message } = result;
@@ -117,10 +116,9 @@ export default class Store {
     return console.warn(message);
   }
 
-  async stand(data) {
+  async stand() {
     const result = await this.send({
       url: '/api/blackjack/stand',
-      data,
     }).catch(log.error);
 
     const { dealerHand, message } = result;
@@ -132,25 +130,28 @@ export default class Store {
     return console.warn(message);
   }
 
-  async doubleDown(data) {
-    return await this.send({
+  async doubleDown() {
+    const result = await this.send({
       url: '/api/blackjack/doubledown',
-      data,
     }).catch(log.error);
+
+    console.log('double down result', result);
   }
 
-  async split(data) {
-    return await this.send({
+  async split() {
+    const result = await this.send({
       url: '/api/blackjack/split',
-      data,
     }).catch(log.error);
+
+    console.log('split result', result);
   }
 
-  async surrender(data) {
-    return await this.send({
+  async surrender() {
+    const result = await this.send({
       url: '/api/blackjack/surrender',
-      data,
     }).catch(log.error);
+
+    console.log('surrender result', result);
   }
 
 }
