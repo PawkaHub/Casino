@@ -25,12 +25,13 @@ export default class Deck extends Base {
     }, []);
   }
 
+  // Hydrates a deck with prepopulated set of cards (in a non destructive way) so that we can have our data get automatically synced back to the database since we didn't destroy the original reference by creating a new array, thanks javascript!
   hydrateDeck(cards) {
-    return cards.reduce((memo, card) => {
+    cards.forEach((card, index) => {
       const { rank, suit } = card;
-      memo.push(new Card(rank, suit));
-      return memo;
-    }, []);
+      cards[index] = new Card(rank, suit);
+    });
+    return cards;
   }
 
   // Draw a card off the top of the deck

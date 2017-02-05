@@ -174,9 +174,9 @@ export default class Blackjack extends Base {
 
   hit(hand) {
     const card = this.deck.draw();
-    console.log('hit', card.toString());
-    const newHand = hand.add(card);
-    console.log('newHand', newHand);
+    // console.log('hit', card.toString());
+    hand.add(card);
+    return card;
   }
 
   stand() {

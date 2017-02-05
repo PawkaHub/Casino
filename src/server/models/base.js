@@ -36,8 +36,9 @@ export default class Base {
     return this.findOne(data);
   }
 
-  updateData(collection, data) {
-    console.log('updateData', this.collection, collection, data);
+  updateData(data) {
+    // console.log('updateData', data);
+    return this.collection.update(data);
   }
 
   /* removeData(collection, data) {

@@ -4,11 +4,12 @@ import Card from 'project/server/models/card';
 
 // A hand of filled with multiple cards.
 export default class Hand extends Base {
-  constructor(cards) {
+  constructor(cards = []) {
     super();
     // If an array of cards is passed into the constructor, create the hand with these cards instead of the usual default of an empty deck of cards
     this.cards = this.populateHand(cards);
-    // console.log('Hand initialized', this.cards);
+    // this.cards = cards;
+    console.log('Hand initialized', this.cards, cards);
   }
 
   // Allows for default population of a empty hand
@@ -18,13 +19,13 @@ export default class Hand extends Base {
     return [];
   }
 
-  // Hydrates a hand with prepopulated set of cards
+  // Hydrates a hand with prepopulated set of cards (in a non destructive way) so that we can have our data get automatically synced back to the database since we didn't destroy the original reference by creating a new array, thanks javascript!
   hydrateHand(cards) {
-    return cards.reduce((memo, card) => {
+    cards.forEach((card, index) => {
       const { rank, suit } = card;
-      memo.push(new Card(rank, suit));
-      return memo;
-    }, []);
+      cards[index] = new Card(rank, suit);
+    });
+    return cards;
   }
 
   add(card) {
