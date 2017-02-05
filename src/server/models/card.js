@@ -51,4 +51,38 @@ export default class Card extends Base {
   toString() {
     return `${this.rank}${this.suit}`;
   }
+
+  // Card Face Helpers
+  isAce() {
+    return this.rank === 'a';
+  }
+
+  isJack() {
+    return this.rank === 'j';
+  }
+
+  isQueen() {
+    return this.rank === 'q';
+  }
+
+  isKing() {
+    return this.rank === 'k';
+  }
+
+  // Card Suit Helpers
+  isClubs() {
+    return this.suit === 'c';
+  }
+
+  isDiamonds() {
+    return this.suit === 'd';
+  }
+
+  isHearts() {
+    return this.suit === 'h';
+  }
+
+  isSpades() {
+    return this.suit === 's';
+  }
 }

@@ -48,10 +48,10 @@ export default class App extends Component {
     const { style } = App;
     const { children } = this.props;
 
-    let recordEl;
-    let devToolsEl;
+    let recordEl = null;
+    let devToolsEl = null;
     if (process.env.NODE_ENV === 'development') {
-      devToolsEl = (<DevTools />);
+      // devToolsEl = (<DevTools />);
       recordEl = (<Record />);
     }
 

@@ -15,7 +15,7 @@ import FormButton from 'libraries/components/form/formButton';
 export default class Lobby extends Component {
   static style = {
     wrapper: {
-      height: '100vh',
+      position: 'relative',
     },
   }
 

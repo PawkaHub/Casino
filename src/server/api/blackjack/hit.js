@@ -14,10 +14,7 @@ export default router.post('/api/blackjack/hit', (req, res) => {
   const game = new Blackjack({ playerId });
 
   // Hit
-  const card = game.hit(game.currentGame.playerHand);
-  if (!card) {
-    return res.status(400).json({ message: 'Deck is empty, no card drawn!' });
-  }
+  game.hit(game.currentGame.playerHand);
 
   // Get Current Game State
   const state = game.getState();

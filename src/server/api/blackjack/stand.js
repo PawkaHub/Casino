@@ -14,7 +14,7 @@ export default router.post('/api/blackjack/stand', (req, res) => {
   const game = new Blackjack({ playerId });
 
   // Stand
-  const dealerHand = game.stand();
+  game.stand();
 
   // Get Current Game State
   const state = game.getState();
@@ -22,8 +22,6 @@ export default router.post('/api/blackjack/stand', (req, res) => {
 
   console.log('DECK');
   console.log(blackjack.deck);
-  console.log('DEALER STAND HAND');
-  console.log(dealerHand.cards);
   console.log('PLAYER HAND');
   console.log(blackjack.playerHand);
   console.log('DEALER HAND');

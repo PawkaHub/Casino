@@ -29,7 +29,7 @@ export default class Store {
 
     // Write server data to local store
     if (blackjack) return this.set('blackjack', asMap(blackjack));
-    return console.warn(message);
+    throw message;
   }
 
   async send({ url = log.error('Please Provide an URL'), data }) {

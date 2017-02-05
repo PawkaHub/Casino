@@ -2,7 +2,6 @@
 import React from 'react';
 import radium from 'radium';
 import Perf from 'react-addons-perf';
-import key from 'keymaster';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 
@@ -32,11 +31,13 @@ export default class Record extends React.Component {
   @observable recording = false
 
   componentDidMount = () => {
-    key('`', this.toggleRecording);
+    // We require keymaster dynamically  here so that we don't get ssr errors due to keymaster requiring access to the client document
+    this.key = require('keymaster');
+    this.key('`', this.toggleRecording);
   }
 
   componentWillUnmount = () => {
-    key.unbind('`');
+    this.key.unbind('`');
   }
 
   toggleRecording = () => {

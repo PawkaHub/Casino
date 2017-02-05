@@ -25,12 +25,18 @@ export default class Blackjack extends Component {
       color: white(),
       ...cover('https://mxg.cdnbf.net/mexchangeblackjack/turbo/assets/gameView/tableBackground.png?v1.26-245'),
     },
+    betForm: {
+      height: 'auto',
+    },
     title: {
       backgroundColor: '#2c3e50',
       color: 'rgba(255,255,255,0.7)',
       height: '30px',
       lineHeight: '32px',
       textAlign: 'center',
+    },
+    bump: {
+      marginTop: '100px',
     },
     dealer: {
       marginTop: '100px',
@@ -46,22 +52,23 @@ export default class Blackjack extends Component {
     },
   }
 
-  @action hit = () => {
+  @action hit = async () => {
     const { store } = this.props;
-    store.hit();
+    await store.hit().catch(this.onError);
+    this.message = 'Hit!';
   }
 
-  @action stand = () => {
+  @action stand = async () => {
     const { store } = this.props;
     store.stand();
   }
 
-  @action doubleDown = () => {
+  @action doubleDown = async () => {
     const { store } = this.props;
     store.doubleDown();
   }
 
-  @action surrender = () => {
+  @action surrender = async () => {
     const { store } = this.props;
     store.surrender();
   }
@@ -83,10 +90,11 @@ export default class Blackjack extends Component {
     this.message = 'Bet Placed!';
   }
 
-  @action onSubmit = ({ playerBetAmount }) => {
+  @action onSubmit = async ({ playerBetAmount }) => {
     const { store } = this.props;
     this.message = 'Placing Bet...';
-    store.bet({ playerBetAmount }).then(this.onResult).catch(this.onError);
+    const result = await store.bet({ playerBetAmount }).catch(this.onError);
+    return this.onResult(result);
   }
 
   render() {
@@ -99,24 +107,13 @@ export default class Blackjack extends Component {
 
     let userEl = null;
     let boardEl = (<Lobby />);
-
-    if (user) {
-      const { playerId, playerName } = user;
-      boardEl = null;
-      userEl = (
-        <div>
-          <div>ID: {playerId}</div>
-          <div>Name: {playerName}</div>
-        </div>
-      );
-    }
-
     let betEl = (
       <Form
         name='playerBet'
         onReset={this.onReset}
         onError={this.onError}
         onSubmit={this.onSubmit}
+        style={style.betForm}
       >
         <div>Welcome to fake blackjack where the money is made up and the points don't matter!</div>
         <NumberInput
@@ -127,8 +124,22 @@ export default class Blackjack extends Component {
       </Form>
     );
 
+    if (!user) { betEl = null; }
+
+    if (user) {
+      const { playerId, playerName } = user;
+      boardEl = null;
+      userEl = (
+        <div>
+          <div>Message: {message}</div>
+          <div>ID: {playerId}</div>
+          <div>Name: {playerName}</div>
+        </div>
+      );
+    }
+
     if (blackjack) {
-      const { finished, payout, playerBetAmount, dealerHand, playerHand } = blackjack;
+      const { finished, outcome, payout, playerBetAmount, playerScore, dealerScore, dealerHand, playerHand } = blackjack;
 
       const dealerCards = dealerHand.map((card, index) => {
         const { rank, suit } = card;
@@ -155,7 +166,8 @@ export default class Blackjack extends Component {
       }
 
       boardEl = (
-        <div>
+        <div style={style.bump}>
+          <div>Outcome: {outcome}</div>
           <div>Bet Amount: {playerBetAmount}</div>
           <div>Finished: {finished ? 'Yes' : 'No'}</div>
           <div>Payout: {payout}</div>
@@ -164,9 +176,11 @@ export default class Blackjack extends Component {
 
           <div style={style.dealer}>Dealer Hand:</div>
           <div>{dealerCards}</div>
+          <div>Dealer Score {dealerScore}</div>
 
           <div style={style.player}>Player Hand:</div>
           <div>{playerCards}</div>
+          <div>Player Score {playerScore}</div>
 
           <div style={style.footer}>
             <div onClick={this.hit}>Hit</div>
@@ -181,8 +195,8 @@ export default class Blackjack extends Component {
     return (
       <div style={style.wrapper}>
         {userEl}
-        {boardEl}
         {betEl}
+        {boardEl}
       </div>
     );
   }
