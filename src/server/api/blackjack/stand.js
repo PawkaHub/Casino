@@ -16,19 +16,19 @@ export default router.post('/api/blackjack/stand', (req, res) => {
   // Stand
   const dealerHand = game.stand();
 
-  const { data } = game;
+  const { output, currentGame } = game;
   console.log('DECK');
-  console.log(game.deck.cards);
+  console.log(currentGame.deck.cards);
   console.log('DEALER STAND HAND');
   console.log(dealerHand.cards);
   console.log('PLAYER HAND');
-  console.log(game.playerHand.cards);
+  console.log(currentGame.playerHand.cards);
   console.log('DEALER HAND');
-  console.log(game.dealerHand.cards);
+  console.log(currentGame.dealerHand.cards);
   // console.log('CURRENT GAME');
-  // console.log(game.currentGame);
-  // console.log('DATA');
-  // console.log(data);
+  // console.log(currentGame);
+  // console.log('OUTPUT');
+  // console.log(output);
 
   res.status(200).json({ dealerHand });
 });

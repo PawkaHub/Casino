@@ -13,11 +13,11 @@ export default router.post('/api/blackjack/bet', (req, res) => {
   const { playerId } = auth;
 
   const game = new Blackjack({ playerId, playerBetAmount });
-  const { data } = game;
-  console.log('Api Bet Post Body', data);
+  const { output } = game;
+  console.log('Api Bet Post Body', output);
 
   // If a current game already exists, return it accordingly. Otherwise error
-  if (data) return res.status(200).json(data);
+  if (output) return res.status(200).json(output);
   return res.status(400).json({
     message: 'You cannot start a new game of Blackjack when one is already in progress.',
   });

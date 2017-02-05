@@ -139,8 +139,8 @@ export default class Player extends Base {
 
     // Retrieve the latest game of blackjack that's being played by the player and return it as part of the user payload, if there is any game at all.
     const game = new Blackjack({ playerId });
-    const { data } = game;
-    if (data) { payload.blackjack = data.blackjack; }
+    const { output } = game;
+    if (output) { payload.blackjack = output.blackjack; }
 
     // console.log('payload', payload);
     // Here is where we finally set the player's instance data for the class, as fetched from the database.
