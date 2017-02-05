@@ -21,6 +21,17 @@ export default class Store {
     return mobx.toJS(this.data);
   }
 
+  handleGameState(result) {
+    console.log('handleGameState', result);
+
+    // Check for server error or state
+    const { blackjack, message } = result;
+
+    // Write server data to local store
+    if (blackjack) return this.set('blackjack', asMap(blackjack));
+    return console.warn(message);
+  }
+
   async send({ url = log.error('Please Provide an URL'), data }) {
     console.log('params', url, data);
 
@@ -93,13 +104,7 @@ export default class Store {
       data,
     }).catch(log.error);
 
-    const { blackjack, message } = result;
-
-    console.log('bet result', result);
-
-    // Write server data to local store
-    if (blackjack) return this.set('blackjack', asMap(blackjack));
-    return console.warn(message);
+    return this.handleGameState(result);
   }
 
   async hit() {
@@ -107,13 +112,7 @@ export default class Store {
       url: '/api/blackjack/hit',
     }).catch(log.error);
 
-    const { card, message } = result;
-
-    console.log('hit result', result);
-
-    // Write server data to local store
-    if (card) return this.get('blackjack').get('playerHand').push(card);
-    return console.warn(message);
+    return this.handleGameState(result);
   }
 
   async stand() {
@@ -121,13 +120,7 @@ export default class Store {
       url: '/api/blackjack/stand',
     }).catch(log.error);
 
-    const { dealerHand, message } = result;
-
-    console.log('stand result', result);
-
-    // Write server data to local store
-    if (dealerHand) return this.get('blackjack').set('dealerHand', dealerHand);
-    return console.warn(message);
+    return this.handleGameState(result);
   }
 
   async doubleDown() {
@@ -135,7 +128,7 @@ export default class Store {
       url: '/api/blackjack/doubledown',
     }).catch(log.error);
 
-    console.log('double down result', result);
+    return this.handleGameState(result);
   }
 
   async split() {
@@ -151,7 +144,7 @@ export default class Store {
       url: '/api/blackjack/surrender',
     }).catch(log.error);
 
-    console.log('surrender result', result);
+    return this.handleGameState(result);
   }
 
 }

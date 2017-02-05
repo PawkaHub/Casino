@@ -123,6 +123,7 @@ export default class Blackjack extends Component {
         onError={this.onError}
         onSubmit={this.onSubmit}
       >
+        <div>Welcome to fake blackjack where the money is made up and the points don't matter!</div>
         <NumberInput
           name='playerBetAmount'
           placeholder='Bet Amount'
@@ -132,9 +133,7 @@ export default class Blackjack extends Component {
     );
 
     if (blackjack) {
-      betEl = null;
-
-      const { finished, playerBetAmount, dealerHand, playerHand } = blackjack;
+      const { finished, payout, playerBetAmount, dealerHand, playerHand } = blackjack;
 
       const dealerCards = dealerHand.map((card, index) => {
         const { rank, suit } = card;
@@ -150,10 +149,23 @@ export default class Blackjack extends Component {
         );
       });
 
+      let restartEl = null;
+      if (!finished) { betEl = null; }
+      if (finished) {
+        restartEl = (
+          <div>
+            <div>Game over. New game?</div>
+          </div>
+        );
+      }
+
       boardEl = (
         <div>
           <div>Bet Amount: {playerBetAmount}</div>
           <div>Finished: {finished ? 'Yes' : 'No'}</div>
+          <div>Payout: {payout}</div>
+
+          {restartEl}
 
           <div style={style.dealer}>Dealer Hand:</div>
           <div>{dealerCards}</div>

@@ -39,9 +39,12 @@ export default class Blackjack extends Base {
     return null;
   }
 
-  formatGameForClient() {
-    // console.log('formatGameForClient', game);
-    // We only return a whitelist of information that we want the client to actually see, instead of all the data available on the database. Things like dealerHand are not returned to the client.
+  getState() {
+    // Don't return any state if a game hasn't been started yet
+    if (!this.currentGame) return;
+    // console.log('getState', game);
+
+    // We only return a whitelist of information that we want the client to actually see for the stored gameState, instead of all the data available on the database. Sensitive information like what cards are in the deck are not returned to the client.
     const {
       blackjackId,
       playerId,
@@ -53,9 +56,9 @@ export default class Blackjack extends Base {
       playerHand,
     } = this.currentGame;
 
-    console.log('formatGameForClient', playerHand.cards, dealerHand.cards);
+    console.log('getState', playerHand.cards, dealerHand.cards);
 
-    this.output = {
+    this.state = {
       blackjack: {
         blackjackId,
         playerId,
@@ -68,15 +71,11 @@ export default class Blackjack extends Base {
       },
     };
 
-    console.log('Data', this.output);
-
-    return this.output;
+    return this.state;
   }
 
   restoreGame({ playerId }) {
-    // console.log('restoreGame', playerId);
     const game = this.findCurrentGame({ playerId });
-    // console.log('game restored', game);
 
     // If a game does exist, rehydrate the game's state
     if (game) {
@@ -87,13 +86,13 @@ export default class Blackjack extends Base {
 
       // Restore models from database
       const { deck, dealerHand, playerHand } = game;
-      console.log('Inspect', dealerHand, playerHand);
 
+      // Rehydrate class models for the appropriate properties
       currentGame.deck = new Deck(deck.cards);
       currentGame.dealerHand = new Hand(dealerHand.cards);
       currentGame.playerHand = new Hand(playerHand.cards);
 
-      return this.formatGameForClient();
+      return this.getState();
     }
     return null;
   }
@@ -123,25 +122,14 @@ export default class Blackjack extends Base {
     // Deal one card to the dealer
     this.hit(currentGame.dealerHand);
 
-    // Output dealerHand
-    // console.log('dealerHand', this.getHandScore(currentGame.dealerHand));
-
     // Deal two cards to the player
     this.hit(currentGame.playerHand);
     this.hit(currentGame.playerHand);
 
-    // Output playerHand
-    // console.log('playerHand', this.getHandScore(currentGame.playerHand));
-
     // Insert the game into the DB
-    const { deck, dealerHand, playerHand, ...rest } = currentGame;
-    console.log('before', rest, dealerHand, playerHand);
+    this.insertData(this.currentGame);
 
-    const game = this.insertData(this.currentGame);
-
-    console.log('game data', game);
-
-    return this.formatGameForClient();
+    return this.getState();
   }
 
   finishGame() {
@@ -218,14 +206,17 @@ export default class Blackjack extends Base {
 
   doubleDown() {
     const { currentGame } = this;
-    console.log('doubleDown', currentGame.playerBetAmount);
 
-    // Double the player's bet and hits one final time
+    // Double the player's bet and hit their hand one final time
     currentGame.playerBetAmount = currentGame.playerBetAmount * 2;
     this.hit(currentGame.playerHand);
 
     // Run out the rest of the dealer's hand
     this.runOut();
+
+    // XXX: Determine the outcome of the game
+    currentGame.payout = 'BLUR BUCKS';
+
 
     // Finish the game
     return this.finishGame();
@@ -236,13 +227,11 @@ export default class Blackjack extends Base {
   }
 
   surrender() {
+    // Get currentGame for this instance
     const { currentGame } = this;
-    console.log('surrender', currentGame.finished);
-
 
     // Player reclaims half their bet when surrendering
-    const payout = currentGame.playerBetAmount / 2;
-    console.log('payut', payout);
+    currentGame.payout = currentGame.playerBetAmount / 2;
 
     // Finish the game
     return this.finishGame();

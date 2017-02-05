@@ -16,19 +16,21 @@ export default router.post('/api/blackjack/stand', (req, res) => {
   // Stand
   const dealerHand = game.stand();
 
-  const { output, currentGame } = game;
+  // Get Current Game State
+  const state = game.getState();
+  const { blackjack } = state;
+
   console.log('DECK');
-  console.log(currentGame.deck.cards);
+  console.log(blackjack.deck);
   console.log('DEALER STAND HAND');
   console.log(dealerHand.cards);
   console.log('PLAYER HAND');
-  console.log(currentGame.playerHand.cards);
+  console.log(blackjack.playerHand);
   console.log('DEALER HAND');
-  console.log(currentGame.dealerHand.cards);
-  // console.log('CURRENT GAME');
-  // console.log(currentGame);
-  // console.log('OUTPUT');
-  // console.log(output);
+  console.log(blackjack.dealerHand);
+  console.log('CURRENT GAME');
+  console.log(state);
 
-  res.status(200).json({ dealerHand });
+  // Return updated state to the client (an obvious optimization that could be done here would be to only return the actually updated state values to the client, and have the client handle those values appropriately; but for now we'll just return the entire white-listed state values as is.)
+  return res.status(200).json(state);
 });
