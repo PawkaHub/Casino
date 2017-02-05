@@ -139,7 +139,7 @@ export default class Blackjack extends Component {
     }
 
     if (blackjack) {
-      const { finished, actions, outcome, payout, playerBetAmount, playerScore, dealerScore, dealerHand, playerHand } = blackjack;
+      const { finished, actions, outcome, outcomeType, payout, playerBetAmount, playerScore, dealerScore, dealerHand, playerHand } = blackjack;
 
       const dealerCards = dealerHand.map((card, index) => {
         const { rank, suit } = card;
@@ -172,6 +172,7 @@ export default class Blackjack extends Component {
       boardEl = (
         <div style={style.bump}>
           <div>Outcome: {outcome}</div>
+          <div>Outcome Type: {outcomeType}</div>
           <div>Bet Amount: {playerBetAmount}</div>
           <div>Finished: {finished ? 'Yes' : 'No'}</div>
           <div>Payout: {payout}</div>

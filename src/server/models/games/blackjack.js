@@ -57,6 +57,7 @@ export default class Blackjack extends Base {
       dealerScore,
       finished,
       outcome,
+      outcomeType,
       payout,
       deck,
       dealerHand,
@@ -77,6 +78,7 @@ export default class Blackjack extends Base {
         dealerScore,
         finished,
         outcome,
+        outcomeType,
         payout,
         actions,
         // deck: deck.cards,
@@ -120,12 +122,16 @@ export default class Blackjack extends Base {
     const { playerBetAmount } = currentGame;
 
     let payout;
+
+    // OPTI: Place outcome and outcomeType in a constants file
     let outcome;
+    let outcomeType;
 
     // If player score is greater than dealer score, player wins
     if (playerScore > dealerScore) {
       payout = playerBetAmount * 2;
       outcome = `You were closer to ${WIN_CONDITION}! You win $${payout}`;
+      outcomeType = 'playerScoreHigher';
       console.log(outcome);
     }
 
@@ -133,6 +139,7 @@ export default class Blackjack extends Base {
     if (playerScore < dealerScore) {
       payout = 0;
       outcome = `Dealer was closer to ${WIN_CONDITION}! House wins $${playerBetAmount}`;
+      outcomeType = 'dealerScoreHigher';
       console.log(outcome);
     }
 
@@ -140,6 +147,7 @@ export default class Blackjack extends Base {
     if (playerScore === dealerScore) {
       payout = 0;
       outcome = `You and dealer tied! House wins $${playerBetAmount}`;
+      outcomeType = 'playerDealerScoreTie';
       console.log(outcome);
     }
 
@@ -147,6 +155,7 @@ export default class Blackjack extends Base {
     if (playerBlackjack && dealerBlackjack) {
       payout = playerBetAmount;
       outcome = `Push, $${playerBetAmount} returned to you.`;
+      outcomeType = 'playerDealerBlackjack';
       console.log(outcome);
     }
 
@@ -154,6 +163,7 @@ export default class Blackjack extends Base {
     if (playerBlackjack && !dealerBlackjack) {
       payout = (playerBetAmount * 3) / 2;
       outcome = `You got Blackjack! You win $${payout}!`;
+      outcomeType = 'playerBlackjack';
       console.log(outcome);
     }
 
@@ -161,6 +171,7 @@ export default class Blackjack extends Base {
     if (!playerBlackjack && dealerBlackjack) {
       payout = 0;
       outcome = `Dealer got Blackjack! House wins $${playerBetAmount}!`;
+      outcomeType = 'dealerBlackjack';
       console.log(outcome);
     }
 
@@ -168,6 +179,7 @@ export default class Blackjack extends Base {
     if (playerBust && dealerBust) {
       payout = 0;
       outcome = `You and dealer both bust. House wins $${playerBetAmount}!`;
+      outcomeType = 'playerDealerBust';
       console.log(outcome);
     }
 
@@ -175,6 +187,7 @@ export default class Blackjack extends Base {
     if (playerBust && !dealerBust) {
       payout = 0;
       outcome = `Player Busts. House wins $${playerBetAmount}!`;
+      outcomeType = 'playerBust';
       console.log(outcome);
     }
 
@@ -182,11 +195,12 @@ export default class Blackjack extends Base {
     if (!playerBust && dealerBust) {
       payout = playerBetAmount * 2;
       outcome = `Dealer Busts. You win $${payout}!`;
+      outcomeType = 'dealerBust';
       console.log(outcome);
     }
 
     // Handle finalization of game and finish it out
-    return this.finishGame(payout, outcome);
+    return this.finishGame(payout, outcome, outcomeType);
   }
 
   getAvailableActions() {
@@ -264,6 +278,7 @@ export default class Blackjack extends Base {
       dealerScore: 0,
       finished: false,
       outcome: null,
+      outcomeType: null,
       payout: 0,
       deck: new Deck(),
       dealerHand: new Hand(),
@@ -295,13 +310,16 @@ export default class Blackjack extends Base {
 
   finishGame(
     payout = 0,
-    outcome = `If you're seeing this, something went wrong!`
+    // OPTI: Place these strings in a constants file
+    outcome = 'INVALID_OUTCOME',
+    outcomeType = 'INVALID_OUTCOME_TYPE',
   ) {
     const { currentGame } = this;
 
     // Set a payout/outcome, and finish the game
     currentGame.payout = payout;
     currentGame.outcome = outcome;
+    currentGame.outcomeType = outcomeType;
     currentGame.finished = true;
   }
 
@@ -417,8 +435,9 @@ export default class Blackjack extends Base {
     // Player reclaims half their bet when surrendering
     const payout = currentGame.playerBetAmount / 2;
     const outcome = `You surrendered and got $${payout} of your original bet back.`;
+    const outcomeType = 'surrender';
 
     // Finish the game
-    return this.finishGame(payout, outcome);
+    return this.finishGame(payout, outcome, outcomeType);
   }
 }
