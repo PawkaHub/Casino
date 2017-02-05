@@ -23,10 +23,10 @@ export default router.post('/api/blackjack/surrender', (req, res) => {
   console.log(game.playerHand.cards);
   console.log('DEALER HAND');
   console.log(game.dealerHand.cards);
-  console.log('CURRENT GAME');
-  console.log(game.currentGame);
-  console.log('DATA');
-  console.log(data);
+  // console.log('CURRENT GAME');
+  // console.log(game.currentGame);
+  // console.log('DATA');
+  // console.log(data);
 
   res.status(200).json({
     hello: 'Api Surrender Result!',

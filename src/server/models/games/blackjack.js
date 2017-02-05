@@ -50,9 +50,6 @@ export default class Blackjack extends Base {
       finished,
     } = game;
 
-    // Save game to currentGame instance variable (so that we can easily update values that will be synced to the database)
-    this.currentGame = game;
-
     this.data = {
       blackjack: {
         blackjackId,
