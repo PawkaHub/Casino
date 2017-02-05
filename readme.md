@@ -47,7 +47,7 @@ In a real world example, some of the following improvements would have to be be 
 
 2.) Architecture is designed to be able to easily add new game modes with minimal effort.
 
-3.) To simulate a logout, put the following code into your browser console and refresh.
+3.) To simulate a logout, put the following code into your browser console and refresh the page.
 
 ```
 localStorage.removeItem('casino-session-token');
