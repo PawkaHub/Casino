@@ -35,17 +35,4 @@ export default class Base {
     // console.log('insertData', this.collection.data);
     return this.findOne(data);
   }
-
-  updateData(data) {
-    // console.log('updateData', data);
-    return this.collection.update(data);
-  }
-
-  /* removeData(collection, data) {
-    console.log('removeData', this.collection, collection, data);
-  }
-
-  saveData(collection) {
-    console.log('saveData', this.collection, collection);
-  }*/
 }

@@ -14,23 +14,21 @@ export default router.post('/api/blackjack/stand', (req, res) => {
   const game = new Blackjack({ playerId });
 
   // Stand
-  game.stand();
+  const dealerHand = game.stand();
 
   const { data } = game;
-  console.log('DECK:');
+  console.log('DECK');
   console.log(game.deck.cards);
-  console.log('HIT CARD:');
-  console.log(card);
-  console.log('PLAYER HAND:');
+  console.log('DEALER STAND HAND');
+  console.log(dealerHand.cards);
+  console.log('PLAYER HAND');
   console.log(game.playerHand.cards);
-  console.log('DEALER HAND:');
+  console.log('DEALER HAND');
   console.log(game.dealerHand.cards);
-  console.log('CURRENT GAME:');
+  console.log('CURRENT GAME');
   console.log(game.currentGame);
-  console.log('DATA:');
+  console.log('DATA');
   console.log(data);
 
-  res.status(200).json({
-    hello: 'Api Stand Result!',
-  });
+  res.status(200).json({ dealerHand });
 });

@@ -20,17 +20,17 @@ export default router.post('/api/blackjack/hit', (req, res) => {
   }
 
   const { data } = game;
-  console.log('DECK:');
+  console.log('DECK');
   console.log(game.deck.cards);
-  console.log('HIT CARD:');
+  console.log('HIT CARD');
   console.log(card);
-  console.log('PLAYER HAND:');
+  console.log('PLAYER HAND');
   console.log(game.playerHand.cards);
-  console.log('DEALER HAND:');
+  console.log('DEALER HAND');
   console.log(game.dealerHand.cards);
-  console.log('CURRENT GAME:');
+  console.log('CURRENT GAME');
   console.log(game.currentGame);
-  console.log('DATA:');
+  console.log('DATA');
   console.log(data);
 
   res.status(200).json({ card });

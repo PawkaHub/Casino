@@ -118,10 +118,18 @@ export default class Store {
   }
 
   async stand(data) {
-    return await this.send({
+    const result = await this.send({
       url: '/api/blackjack/stand',
       data,
     }).catch(log.error);
+
+    const { dealerHand, message } = result;
+
+    console.log('stand result', result);
+
+    // Write server data to local store
+    if (dealerHand) return this.get('blackjack').set('dealerHand', dealerHand);
+    return console.warn(message);
   }
 
   async doubleDown(data) {

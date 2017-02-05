@@ -45,6 +45,7 @@ export default class Blackjack extends Base {
     const {
       blackjackId,
       playerHand,
+      dealerHand,
       playerBetAmount,
       finished,
     } = game;
@@ -56,6 +57,7 @@ export default class Blackjack extends Base {
       blackjack: {
         blackjackId,
         playerHand,
+        dealerHand,
         playerBetAmount,
         finished,
       },
@@ -184,6 +186,7 @@ export default class Blackjack extends Base {
     console.log('stand');
     do {
       this.hit(this.dealerHand);
+      return this.dealerHand.cards;
     } while (this.getHandScore(this.dealerHand) < Blackjack.DEALER_STAND);
   }
 
@@ -199,74 +202,3 @@ export default class Blackjack extends Base {
     console.log('surrender');
   }
 }
-
-/*
-// Returns the current state of the game:
-//  the player's hand
-//  the dealer's hand
-//  the available actions
-Game.getGamestate = function() {
-  var gamestate = "Player shows " + this.playerHand.toString() + " (" + this.playerHand.score() + "). " +
-          "Dealer shows " + this.dealerHand.toString() + " (" + this.dealerHand.score() + "). ";
-
-  var availableActions = [];
-
-  if (!this.playerHand.isBusto() && this.dealerHand.cards.length === 1) {
-    if (this.playerHand.score() < 21) {
-      availableActions.push('hit');
-    }
-    if (this.playerHand.cards.length === 2 && this.dealerHand.cards.length === 1) {
-      availableActions.push('doubledown');
-    }
-    availableActions.push('stand');
-
-    gamestate += " Available actions: " + availableActions;
-  }
-
-  return gamestate;
-};*/
-
-
-/* if (session.game) {
-    res.status(400).json({
-      message: 'You cannot start a new game of Blackjack when one is already in progress.',
-    });
-  } else {
-    const { bed } = body;
-    const game = new Game({ bed });
-  }*/
-
-  /* var session = req.session;
-
-  //check to see if deal has already been called
-  if (req.session.game) {
-    res.status(400).json("{ message: DEAL action is not available at this time }");
-  } else {
-
-    //create a new game
-    var game = new Game(req.body.bet);
-
-    //deal two Cards to the player
-    game.playerHand.hit(game.deck.draw());
-    game.playerHand.hit(game.deck.draw());
-
-    //deal one Card to the dealer
-    game.dealerHand.hit(game.deck.draw());
-
-    //if the player has a blackjack, run the dealer hand out
-    if (game.playerHand.isBlackjack()) {
-      do {
-        game.dealerHand.hit(game.deck.draw());
-      } while (game.dealerHand.score() < Hand.DEALER_STAND);
-    }
-
-    //put the game into the session for the next interaction
-    session.game = game;
-
-    var message = game.getGamestate();
-    if (game.playerHand.isBlackjack()) {
-      message += "Blackjack! You win $" + (game.bet * 3)/2;
-    }
-
-    res.status(200).json("{ message: " + message + " }");
-  }*/

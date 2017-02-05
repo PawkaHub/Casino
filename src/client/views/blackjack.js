@@ -31,6 +31,12 @@ export default class Blackjack extends Component {
       lineHeight: '32px',
       textAlign: 'center',
     },
+    dealer: {
+      marginTop: '100px',
+    },
+    player: {
+      marginTop: '100px',
+    },
     footer: {
       position: 'absolute',
       right: '0',
@@ -127,20 +133,32 @@ export default class Blackjack extends Component {
     if (blackjack) {
       betEl = null;
 
-      const { finished, playerBetAmount, playerHand } = blackjack;
+      const { finished, playerBetAmount, dealerHand, playerHand } = blackjack;
 
-      const cards = playerHand.map((card, index) => {
-        console.log('check', card);
+      const dealerCards = dealerHand.map((card, index) => {
         const { rank, suit } = card;
-        return (<div key={`card-${index}`}>Card: {rank}{suit}</div>)
+        return (
+          <div key={`dealer-card-${index}`}>Dealer Card: {rank}{suit}</div>
+        );
+      });
+
+      const playerCards = playerHand.map((card, index) => {
+        const { rank, suit } = card;
+        return (
+          <div key={`player-card-${index}`}>Card: {rank}{suit}</div>
+        );
       });
 
       boardEl = (
         <div>
-          <div>BIG BAD DEALER HAND UP HERE</div>
           <div>Bet Amount: {playerBetAmount}</div>
           <div>Finished: {finished ? 'Yes' : 'No'}</div>
-          <div>Player Hand: {cards}</div>
+
+          <div style={style.dealer}>Dealer Hand:</div>
+          <div>{dealerCards}</div>
+
+          <div style={style.player}>Player Hand:</div>
+          <div>{playerCards}</div>
 
           <div style={style.footer}>
             <div onClick={this.hit}>Hit</div>
