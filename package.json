@@ -1,14 +1,14 @@
 {
-  "name": "Blackjack",
+  "name": "Casino",
   "version": "0.0.1",
-  "description": "Blackjack Code Sample",
+  "description": "Simple Casino Code Sample",
   "scripts": {
     "build": "webpack --config=./src/config/webpack.config.babel.js",
     "serve": "yarn run build && node ./build/tools/serve"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PawkaHub/Blackjack"
+    "url": "https://github.com/PawkaHub/Casino"
   },
   "author": "Pieter Parker",
   "devDependencies": {
@@ -23,6 +23,7 @@
     "babel-preset-stage-0": "^6.16.0",
     "babel-preset-stage-1": "^6.5.0",
     "mobx-react-devtools": "^4.2.10",
+    "react-addons-perf": "^15.4.2",
     "react-hot-loader": "^3.0.0-beta.6",
     "stats-webpack-plugin": "^0.4.2",
     "strip-loader": "^0.1.2",
@@ -39,6 +40,7 @@
     "express-jwt": "^5.1.0",
     "jsonwebtoken": "^7.2.1",
     "jwt-decode": "^2.1.0",
+    "keymaster": "^1.6.2",
     "lokijs": "^1.4.2",
     "mobx": "^2.2.2",
     "mobx-react": "^3.3.1",

@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 
 // Libraries
 import Reset from 'libraries/styles/reset';
+import Record from 'libraries/components/debug/record';
 
 @inject('store') @radium({ isRoot: true }) @observer
 export default class App extends Component {
@@ -47,9 +48,11 @@ export default class App extends Component {
     const { style } = App;
     const { children } = this.props;
 
-    let devTools;
-    if (process.env.APP_ENV === 'development') {
-      devTools = (<DevTools />);
+    let recordEl;
+    let devToolsEl;
+    if (process.env.NODE_ENV === 'development') {
+      devToolsEl = (<DevTools />);
+      recordEl = (<Record />);
     }
 
     return (
@@ -57,11 +60,14 @@ export default class App extends Component {
         {/* Base Reset Styles */}
         <Style rules={Reset} />
 
+        {/* Performance Debugging Tool */}
+        {recordEl}
+
         {/* Render all content provided by the server */}
         {children}
 
         {/* Development Tools */}
-        {devTools}
+        {devToolsEl}
       </StyleRoot>
     );
   }
