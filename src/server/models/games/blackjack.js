@@ -393,6 +393,7 @@ export default class Blackjack extends Base {
   stand() {
     const { currentGame } = this;
     if (!currentGame || currentGame.finished) return console.error(`Stand can't be used when no game is in progress`);
+
     // Play out the dealer's hand until they hit their stand threshold
     this.playOut();
 
