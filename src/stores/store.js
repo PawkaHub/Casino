@@ -46,6 +46,24 @@ export default class Store {
     return json;
   }
 
+  async auth(data) {
+    const result = await this.send({
+      url: '/api/player/auth',
+      data,
+    }).catch(log.error);
+
+    // If the user has successfully joined the lobby, save their JWT token to localStorage for inclusion in all subsequent API requests
+    return this.createSession(result);
+  }
+
+  async reauth() {
+    // If a casino-session-token value already exists for this client, pass the token to the server and re-verify it over there, and return the updated token to the client and re-intiailize the session. Naturally in a real world situation things like token expiration and other edge cases would have to be handled, but this is fine for a code sample.
+    const result = await this.send({
+      url: '/api/player/reauth'
+    }).catch(log.error);
+    return this.createSession(result);
+  }
+
   async createSession(result) {
     console.log('createSession', result);
     if (result.token) {
@@ -74,31 +92,6 @@ export default class Store {
     // Write server data to local store
     if (blackjack) return this.set('blackjack', asMap(blackjack));
     return console.warn(message);
-  }
-
-  async auth(data) {
-    const result = await this.send({
-      url: '/api/player/auth',
-      data,
-    }).catch(log.error);
-
-    // If the user has successfully joined the lobby, save their JWT token to localStorage for inclusion in all subsequent API requests
-    return this.createSession(result);
-  }
-
-  async reauth() {
-    // If a casino-session-token value already exists for this client, pass the token to the server and re-verify it over there, and return the updated token to the client and re-intiailize the session. Naturally in a real world situation things like token expiration and other edge cases would have to be handled, but this is fine for a code sample.
-    const result = await this.send({
-      url: '/api/player/reauth'
-    }).catch(log.error);
-    return this.createSession(result);
-  }
-
-  async deal(data) {
-    return await this.send({
-      url: '/api//blackjack/deal',
-      data,
-    }).catch(log.error);
   }
 
   async hit(data) {
@@ -135,4 +128,5 @@ export default class Store {
       data,
     }).catch(log.error);
   }
+
 }

@@ -41,12 +41,12 @@ export default class Blackjack extends Component {
 
   @action hit = () => {
     const { store } = this.props;
-    store.hit({ hello: 'hit' });
+    store.hit();
   }
 
   @action stand = () => {
     const { store } = this.props;
-    store.stand({ hello: 'stand' });
+    store.stand();
   }
 
   @action doubleDown = () => {
