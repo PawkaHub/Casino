@@ -14,8 +14,7 @@ export default class Hand extends Component {
 
   static style = {
     wrapper: {
-      background: 'red',
-      display: 'inline-block',
+      position: 'relative',
     },
   }
 

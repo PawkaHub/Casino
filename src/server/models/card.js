@@ -37,14 +37,14 @@ export default class Card extends Base {
     if (ranks.indexOf(rank) >= 0) {
       this.rank = rank;
     } else {
-      log.error('This card has an invalid rank');
+      this.rank = 'hidden';
     }
 
     // Ensure the suit is a valid one as defined above
     if (suits.indexOf(suit) >= 0) {
       this.suit = suit;
     } else {
-      log.error('This card has an invalid suit');
+      this.suit = 'hidden';
     }
   }
 

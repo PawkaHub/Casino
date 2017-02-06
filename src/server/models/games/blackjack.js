@@ -4,6 +4,7 @@ import uuid from 'uuid';
 // Models
 import Base from 'project/server/models/base';
 import Deck from 'project/server/models/deck';
+import Card from 'project/server/models/card';
 import Hand from 'project/server/models/hand';
 
 // For scoring, K, Q, J all count as 10. A can be 1 or 10 depending of what will the score closest to 21 will be without busting. Card suits don't matter.
@@ -67,8 +68,12 @@ export default class Blackjack extends Base {
     const actions = this.getAvailableActions();
 
     // Only display the second after card to the client, unless the game is finished in which case you can show the dealer's entire hand
-    let availableDealerHand = [...dealerHand.cards].filter((card, index) => {
-      return index !== 0;
+    let availableDealerHand = [...dealerHand.cards].map((card, index) => {
+      if (index === 0) {
+        const { suit } = card;
+        return new Card(null, suit);
+      }
+      return card;
     });
     if (finished) { availableDealerHand = dealerHand.cards; }
 
