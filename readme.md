@@ -7,24 +7,26 @@
 
 ### Running The Code Sample
 
-1) Clone Repo
+1) Install Yarn from [https://yarnpkg.com/docs/install](https://yarnpkg.com/docs/install)
+
+2) Clone Repo
 ```
 git clone git@github.com:PawkaHub/Casino.git
 ```
 
-2) Enter Project Directory
+3) Enter Project Directory
 ```
 cd Casino
 ```
 
-3) Install NPM dependencies (or use Yarn if you have it installed)
+4) Install dependencies via Yarn
 ```
-npm install
+yarn
 ```
 
-4) Run the server with development settings (or use Yarn if you have it installed)
+4) Run the server with development settings
 ```
-npm run serve
+yarn run serve
 ```
 
 5) Server should now be running on [http://localhost:1234](http://localhost:1234), go ahead and log in with whatever email, name and password you want (an account will be created automatically for you) and play as many games of Blackjack as you like!
