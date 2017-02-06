@@ -70,7 +70,8 @@ export default class Blackjack extends Base {
     const actions = this.getAvailableActions();
 
     // Only display the second after card to the client, unless the game is finished in which case you can show the dealer's entire hand
-    let availableDealerHand = [...dealerHand.cards].filter((card, index) => {
+    /* const shimArray = [...dealerHand.cards];
+    let availableDealerHand = shimArray.filter((card, index) => {
       return index !== 0;
     });
     if (finished) { availableDealerHand = dealerHand.cards; }
@@ -79,7 +80,7 @@ export default class Blackjack extends Base {
     let visibleDealerScore = this.getHandScore(availableDealerHand);
     if (finished) { visibleDealerScore = dealerScore; }
 
-    console.log('Checkaroo', dealerHand.cards, availableDealerHand);
+    console.log('Checkaroo', dealerHand.cards, availableDealerHand);*/
 
     this.state = {
       blackjack: {
@@ -87,14 +88,14 @@ export default class Blackjack extends Base {
         playerId,
         playerBetAmount,
         playerScore,
-        dealerScore: visibleDealerScore,
+        dealerScore,
         finished,
         outcome,
         outcomeType,
         payout,
         actions,
         // deck: deck.cards,
-        dealerHand: availableDealerHand,
+        dealerHand: dealerHand.cards,
         playerHand: playerHand.cards,
       },
     };
@@ -102,7 +103,7 @@ export default class Blackjack extends Base {
     return this.state;
   }
 
-  checkGameRules() {
+  determineOutcome() {
     const { currentGame } = this;
 
     // Fetch player score
@@ -238,7 +239,7 @@ export default class Blackjack extends Base {
       }
 
       // Players can only doubledown and surrender at the start of the game
-      if (playerHand.count() === 2 && dealerHand.count() === 1) {
+      if (playerHand.count() === 2 && dealerHand.count() === 2) {
         actions.push('doubleDown');
         actions.push('surrender');
       }
@@ -276,6 +277,7 @@ export default class Blackjack extends Base {
   }
 
   startGame({ playerId, playerBetAmount }) {
+    // if (this.currentGame) return console.error('You can only start a game when one is not already in progress');
     // console.log('newGame', playerId, playerBetAmount);
 
     // Create a new game
@@ -401,19 +403,23 @@ export default class Blackjack extends Base {
 
     // If the player busts, stand automatically and let the player know the outcome of the game accordingly.
     const playerBust = this.isBust(hand);
-    if (playerBust) { this.stand(); }
+    // console.log('playerBust', playerBust);
+    if (playerBust) {
+      console.log('PLAYER BUSTED', playerBust);
+      // Finish the game, there is no need for a dealer to play out there hand as the entire point of the game is moot now since the player has busted.
+      this.determineOutcome();
+    }
   }
 
   stand() {
     const { currentGame } = this;
-    if (!currentGame || currentGame.finished) return console.error(`Stand can't be used when no game is in progress`);
+    if (!currentGame || currentGame.finished) return console.error(`Stand can't be used when no game is in progress`, currentGame);
 
     // Play out the dealer's hand until they hit their stand threshold
     this.playOut();
 
     // Let the player know the outcome of the game and if they've won or lost
-    const outcome = this.checkGameRules();
-    return outcome;
+    this.determineOutcome();
   }
 
   playOut() {
