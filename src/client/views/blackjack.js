@@ -10,6 +10,7 @@ import { cover } from 'libraries/styles/cover';
 import Form from 'libraries/components/form/form';
 import NumberInput from 'libraries/components/form/numberInput';
 import FormButton from 'libraries/components/form/formButton';
+import Hand from 'libraries/components/hand';
 
 // Project
 import Lobby from 'project/client/views/lobby';
@@ -147,22 +148,12 @@ export default class Blackjack extends Component {
         dealerHand.unshift(dummyCard);
       }
 
-      const dealerCards = dealerHand.map((card, index) => {
-        const { rank, suit } = card;
-        return (
-          <div key={`dealer-card-${index}`}>Dealer Card: {rank}{suit}</div>
-        );
-      });
+      const dealerCards = (<Hand cards={dealerHand} />);
+
+      const playerCards = (<Hand cards={playerHand} />);
 
       const activeActions = actions.map((action, index) => {
         return (<div key={`action-${index}`} onClick={this[action]}>{action}</div>);
-      });
-
-      const playerCards = playerHand.map((card, index) => {
-        const { rank, suit } = card;
-        return (
-          <div key={`player-card-${index}`}>Card: {rank}{suit}</div>
-        );
       });
 
       let restartEl = null;
