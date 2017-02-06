@@ -64,10 +64,22 @@ export default class Blackjack extends Base {
       playerHand,
     } = this.currentGame;
 
-    console.log('getState', playerHand.cards, dealerHand.cards);
+    // console.log('getState', playerHand.cards, dealerHand.cards);
 
     // Get available actions that the player can use
     const actions = this.getAvailableActions();
+
+    // Only display the second after card to the client, unless the game is finished in which case you can show the dealer's entire hand
+    let availableDealerHand = [...dealerHand.cards].filter((card, index) => {
+      return index !== 0;
+    });
+    if (finished) { availableDealerHand = dealerHand.cards; }
+
+    // Show the modified dealerScore based on the available dealerHand
+    let visibleDealerScore = this.getHandScore(availableDealerHand);
+    if (finished) { visibleDealerScore = dealerScore; }
+
+    console.log('Checkaroo', dealerHand.cards, availableDealerHand);
 
     this.state = {
       blackjack: {
@@ -75,14 +87,14 @@ export default class Blackjack extends Base {
         playerId,
         playerBetAmount,
         playerScore,
-        dealerScore,
+        dealerScore: visibleDealerScore,
         finished,
         outcome,
         outcomeType,
         payout,
         actions,
         // deck: deck.cards,
-        dealerHand: dealerHand.cards,
+        dealerHand: availableDealerHand,
         playerHand: playerHand.cards,
       },
     };
@@ -95,27 +107,27 @@ export default class Blackjack extends Base {
 
     // Fetch player score
     const playerScore = this.getHandScore(currentGame.playerHand);
-    console.log('playerScore', playerScore);
+    // console.log('playerScore', playerScore);
 
     // Fetch dealer score
     const dealerScore = this.getHandScore(currentGame.dealerHand);
-    console.log('dealerScore', dealerScore);
+    // console.log('dealerScore', dealerScore);
 
     // Check if player has blackjack
     const playerBlackjack = this.isBlackjack(currentGame.playerHand);
-    console.log('playerBlackjack', playerBlackjack);
+    // console.log('playerBlackjack', playerBlackjack);
 
     // Check if player is bust
     const playerBust = this.isBust(currentGame.playerHand);
-    console.log('playerBust', playerBust);
+    // console.log('playerBust', playerBust);
 
     // Check if dealer has blackjack
     const dealerBlackjack = this.isBlackjack(currentGame.dealerHand);
-    console.log('dealerBlackjack', dealerBlackjack);
+    // console.log('dealerBlackjack', dealerBlackjack);
 
     // Check if dealer is bust
     const dealerBust = this.isBust(currentGame.dealerHand);
-    console.log('dealerBust', dealerBust);
+    // console.log('dealerBust', dealerBust);
 
     // For convenient access in output messages
     const { WIN_CONDITION } = Blackjack;
@@ -213,8 +225,6 @@ export default class Blackjack extends Base {
     const { playerHand, dealerHand, finished } = currentGame;
     const { WIN_CONDITION } = Blackjack;
 
-    console.log('Check', dealerHand.count());
-
     // Actions are only available if a game is in progress
     if (!finished) {
 
@@ -237,7 +247,7 @@ export default class Blackjack extends Base {
       actions.push('stand');
     }
 
-    console.log('final actions', actions);
+    // console.log('final actions', actions);
 
     return actions;
   }
@@ -266,7 +276,7 @@ export default class Blackjack extends Base {
   }
 
   startGame({ playerId, playerBetAmount }) {
-    console.log('newGame', playerId, playerBetAmount);
+    // console.log('newGame', playerId, playerBetAmount);
 
     // Create a new game
     const blackjackId = uuid.v4();
@@ -291,7 +301,8 @@ export default class Blackjack extends Base {
     // Shuffle the deck
     currentGame.deck.shuffle();
 
-    // Deal one card to the dealer
+    // Deal two cards to the dealer. Only the second one will be returned to the client, but the first one will be flipped upon completion of the game
+    this.hit(currentGame.dealerHand);
     this.hit(currentGame.dealerHand);
 
     // Deal two cards to the player
@@ -328,7 +339,10 @@ export default class Blackjack extends Base {
     let score = 0;
     let aceCount = 0;
 
-    hand.cards.forEach((card) => {
+    // Account for if a normal array is passed in, instead of a class instance
+    const currentHand = hand.cards ? hand.cards : hand;
+
+    currentHand.forEach((card) => {
       const { rank } = card;
       if (
         card.isKing() ||
@@ -349,7 +363,7 @@ export default class Blackjack extends Base {
       aceCount--;
     }
 
-    console.log('getHandScore', hand.cards, score);
+    // console.log('getHandScore', hand.cards, score);
 
     return score;
   }
@@ -399,7 +413,6 @@ export default class Blackjack extends Base {
 
     // Let the player know the outcome of the game and if they've won or lost
     const outcome = this.checkGameRules();
-    console.log('outcome', outcome);
     return outcome;
   }
 
@@ -409,9 +422,8 @@ export default class Blackjack extends Base {
 
     do {
       this.hit(currentGame.dealerHand);
-      return currentGame.dealerHand.cards;
     } while (
-      this.getHandScore(currentGame.dealerHand) < Blackjack.DEALER_STAND
+      this.getHandScore(currentGame.dealerHand) < Blackjack.STAND_CONDITION
     );
   }
 

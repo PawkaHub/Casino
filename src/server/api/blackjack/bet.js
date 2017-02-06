@@ -18,14 +18,14 @@ export default router.post('/api/blackjack/bet', (req, res) => {
   const state = game.getState();
   const { blackjack } = state;
 
-  console.log('DECK');
+  /* console.log('DECK');
   console.log(blackjack.deck);
   console.log('PLAYER HAND');
   console.log(blackjack.playerHand);
   console.log('DEALER HAND');
   console.log(blackjack.dealerHand);
   console.log('CURRENT GAME');
-  console.log(state);
+  console.log(state);*/
 
   // If a current game already exists, return it accordingly. Otherwise error
   if (state) return res.status(200).json(state);

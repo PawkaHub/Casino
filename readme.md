@@ -32,9 +32,9 @@ npm run serve
 ### Real World Improvements
 In a real world example, some of the following improvements would have to be be added to the code sample that were left out for the sake of time and brevity. There are certainly more improvements that would have to be done beyond just the ones listed below, but it's worth highlighting some of them to demonstrate that they've been thought of.
 
-1.) Unit Tests
+1.) Typescript/Flow and Unit Tests
 
-2.) Typescript/Flow
+2.) Make use of observables in models class
 
 3.) Store loose strings in a Constants file
 
