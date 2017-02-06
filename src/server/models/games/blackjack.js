@@ -71,7 +71,7 @@ export default class Blackjack extends Base {
     let availableDealerHand = [...dealerHand.cards].map((card, index) => {
       if (index === 0) {
         const { suit } = card;
-        return new Card(null, suit);
+        return new Card(0, suit);
       }
       return card;
     });
@@ -80,6 +80,8 @@ export default class Blackjack extends Base {
     // Show the modified dealerScore based on the available dealerHand
     let visibleDealerScore = this.getHandScore(availableDealerHand);
     if (finished) { visibleDealerScore = dealerScore; }
+
+    console.log('Checkaroo', visibleDealerScore);
 
     this.state = {
       blackjack: {
@@ -340,6 +342,8 @@ export default class Blackjack extends Base {
 
     currentHand.forEach((card) => {
       const { rank } = card;
+      console.log('rank', rank);
+
       if (
         card.isKing() ||
         card.isQueen() ||
@@ -349,6 +353,8 @@ export default class Blackjack extends Base {
       } else if (card.isAce()) {
         score = score + 11;
         aceCount++;
+      } else if (card.isHidden()) {
+        score = score;
       } else {
         score = score + parseInt(rank);
       }

@@ -5,15 +5,15 @@ import { inject, observer } from 'mobx-react';
 import radium from 'radium';
 
 // Libraries
-import { white } from 'libraries/styles/colors';
+import { capitalize } from 'libraries/utils';
+import { white, midnight } from 'libraries/styles/colors';
 import { cover } from 'libraries/styles/cover';
-import Form from 'libraries/components/form/form';
-import NumberInput from 'libraries/components/form/numberInput';
-import FormButton from 'libraries/components/form/formButton';
 import Hand from 'libraries/components/hand';
 
 // Project
-import Lobby from 'project/client/views/lobby';
+import Login from 'project/client/components/login';
+import Info from 'project/client/components/info';
+import Bet from 'project/client/components/bet';
 
 @inject('store') @radium @observer
 export default class Blackjack extends Component {
@@ -24,26 +24,74 @@ export default class Blackjack extends Component {
       height: '100vh',
       overflow: 'hidden',
       color: white(),
+      backgroundColor: midnight(),
+    },
+    holder: {
+      position: 'absolute',
+      top: '0px',
+      right: '0px',
+      bottom: '0px',
+      left: '0px',
+      overflow: 'hidden',
+    },
+    board: {
+      position: 'absolute',
+      top: '0px',
+      right: '0px',
+      bottom: '0px',
+      left: '0px',
+      overflow: 'hidden',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       ...cover('https://mxg.cdnbf.net/mexchangeblackjack/turbo/assets/gameView/tableBackground.png?v1.26-245'),
+      transition: 'opacity 900ms ease-in-out',
     },
-    betForm: {
-      height: 'auto',
+    boardHidden: {
+      opacity: '0.2',
     },
-    title: {
-      backgroundColor: '#2c3e50',
-      color: 'rgba(255,255,255,0.7)',
+    cards: {
+      position: 'relative',
+    },
+    bar: {
+      height: '60px',
+      width: '100%',
+      marginTop: '50px',
+      marginBottom: '58px',
+    },
+    barHidden: {
+      opacity: '0',
+      pointerEvents: 'none',
+    },
+    topBar: {
       height: '30px',
-      lineHeight: '32px',
-      textAlign: 'center',
+      lineHeight: '30px',
+      marginBottom: '10px',
     },
-    bump: {
-      marginTop: '100px',
+    middleBar: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
-    dealer: {
-      marginTop: '100px',
+    barItem: {
+      margin: '10px',
+      padding: '0 30px',
+      height: '40px',
+      lineHeight: '42px',
+      borderRadius: '20px',
+      background: white(),
+      color: midnight(),
+      cursor: 'pointer',
+      transition: 'opacity 300ms ease-in-out',
+      opacity: '0.8',
+      ':hover': {
+        opacity: '1',
+      }
     },
-    player: {
-      marginTop: '100px',
+    bottomBar: {
+      height: '30px',
+      lineHeight: '30px',
+      marginTop: '10px',
     },
     footer: {
       position: 'absolute',
@@ -56,141 +104,124 @@ export default class Blackjack extends Component {
   @action hit = async () => {
     const { store } = this.props;
     await store.hit().catch(this.onError);
-    this.message = 'Hit!';
   }
 
   @action stand = async () => {
     const { store } = this.props;
-    store.stand();
+    await store.stand();
   }
 
   @action doubleDown = async () => {
     const { store } = this.props;
-    store.doubleDown();
+    await store.doubleDown();
   }
 
   @action surrender = async () => {
     const { store } = this.props;
-    store.surrender();
-  }
-
-  @observable message = 'Place Bet'
-
-  // Form Submission
-  @action onReset = () => {
-    this.message = 'Place Bet';
-  }
-
-  @action onError = (error) => {
-    console.log('Place Bet error', error);
-    this.message = error;
-  }
-
-  @action onResult = (result) => {
-    console.log('Place Bet result', result);
-    this.message = 'Bet Placed!';
-  }
-
-  @action onSubmit = async ({ playerBetAmount }) => {
-    const { store } = this.props;
-    this.message = 'Placing Bet...';
-    const result = await store.bet({ playerBetAmount }).catch(this.onError);
-    return this.onResult(result);
+    await store.surrender();
   }
 
   render() {
     const { style } = Blackjack;
-    const { message, props } = this;
 
     // Fetch store data
-    const { store } = props;
+    const { store } = this.props;
     const { user, blackjack } = store.showData();
 
     let userEl = null;
-    let boardEl = (<Lobby />);
-    let betEl = (
-      <Form
-        name='playerBet'
-        onReset={this.onReset}
-        onError={this.onError}
-        onSubmit={this.onSubmit}
-        style={style.betForm}
-      >
-        <div>Welcome to fake blackjack where the money is made up and the points don't matter!</div>
-        <NumberInput
-          name='playerBetAmount'
-          placeholder='Bet Amount'
-        />
-        <FormButton text='Start New Game' />
-      </Form>
-    );
+    let boardEl = (<Login />);
+    let restartEl = null;
 
-    if (!user) { betEl = null; }
+    const infoItems = [];
+
+    const boardStyle = [style.board];
+    const barStyle = [style.bar];
+
+    // If no blackjack game in progress, show bet form
+    if (user && !blackjack) { boardEl = (<Bet />); }
 
     if (user) {
-      const { playerId, playerName } = user;
-      boardEl = null;
-      userEl = (
-        <div>
-          <div>Message: {message}</div>
-          <div>ID: {playerId}</div>
-          <div>Name: {playerName}</div>
-        </div>
-      );
+      const { playerName } = user;
+      infoItems.push(`Logged in as: ${playerName}`);
     }
 
     if (blackjack) {
-      const { finished, actions, outcome, outcomeType, payout, playerBetAmount, playerScore, dealerScore, dealerHand, playerHand } = blackjack;
+      const {
+        dealerHand,
+        dealerScore,
+        playerHand,
+        playerScore,
+        actions,
+        finished,
+        playerBetAmount,
+        payout,
+        outcome,
+      } = blackjack;
 
+      infoItems.push(`Your Bet: ${playerBetAmount}`);
+      if (payout) { infoItems.push(`Your Payout: ${payout}`); }
+      if (outcome) { infoItems.push(outcome); }
+
+      // Update userEl
+      userEl = (<Info items={infoItems} />);
+
+      // Generate dealer hand
       const dealerCards = (<Hand cards={dealerHand} />);
 
+      // Generate player hand
       const playerCards = (<Hand cards={playerHand} />);
 
-      const activeActions = actions.map((action, index) => {
-        return (<div key={`action-${index}`} onClick={this[action]}>{action}</div>);
-      });
+      // Generate active actions a player can take
+      let activeActions = actions.map((action, index) => {
+        // Generate front end friendly text
+        let actionText = capitalize(action);
+        if (action === 'doubleDown') { actionText = 'Double Down'; }
 
-      let restartEl = null;
-      if (!finished) { betEl = null; }
-      if (finished) {
-        restartEl = (
-          <div>
-            <div>Game over. New game?</div>
+        return (
+          <div
+            key={`action-${index}`}
+            style={style.barItem}
+            onClick={this[action]}
+          >
+            {actionText}
           </div>
         );
+      });
+
+      // Handle if a game is already finished
+      if (finished) {
+        boardStyle.push(style.boardHidden);
+        barStyle.push(style.barHidden);
+        restartEl = (<Bet welcomeMessage={outcome} />);
       }
 
       boardEl = (
-        <div style={style.bump}>
-          <div>Outcome: {outcome}</div>
-          <div>Outcome Type: {outcomeType}</div>
-          <div>Bet Amount: {playerBetAmount}</div>
-          <div>Finished: {finished ? 'Yes' : 'No'}</div>
-          <div>Payout: {payout}</div>
+        <div style={boardStyle}>
 
-          {restartEl}
+          <div style={style.cards}>
 
-          <div style={style.dealer}>Dealer Hand:</div>
-          <div>{dealerCards}</div>
-          <div>Dealer Score {dealerScore}</div>
+            <div style={style.topBar}>Dealer Score: {dealerScore}</div>
+            {dealerCards}
 
-          <div style={style.player}>Player Hand:</div>
-          <div>{playerCards}</div>
-          <div>Player Score {playerScore}</div>
+            <div style={barStyle}>
+              <div style={style.middleBar}>{activeActions}</div>
+            </div>
 
-          <div style={style.footer}>
-            <div>Active Actions Test:</div>
-            {activeActions}
+            {playerCards}
+            <div style={style.bottomBar}>Player Score: {playerScore}</div>
           </div>
+
         </div>
       );
     }
 
     return (
       <div style={style.wrapper}>
+        <div style={style.holder}>
+          {boardEl}
+        </div>
         {userEl}
-        {betEl}
-        {boardEl}
+        {restartEl}
       </div>
     );
   }

@@ -52,3 +52,10 @@ In a real world example, some of the following improvements would have to be be 
 ```
 localStorage.removeItem('casino-session-token');
 ```
+
+4.) To see the data within the local store, put the following code into your browser console and explore the input as you see fit.
+```
+store.showData();
+```
+
+5.) For the sake of time, the design has not been tested on mobile, so it is best used on a desktop or laptop browser.

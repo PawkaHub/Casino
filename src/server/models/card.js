@@ -52,6 +52,10 @@ export default class Card extends Base {
     return `${this.rank}${this.suit}`;
   }
 
+  isHidden() {
+    return this.rank === 'hidden';
+  }
+
   // Card Face Helpers
   isAce() {
     return this.rank === 'a';

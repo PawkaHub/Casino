@@ -12,17 +12,27 @@ import PasswordInput from 'libraries/components/form/passwordInput';
 import FormButton from 'libraries/components/form/formButton';
 
 @inject('store') @observer @radium
-export default class Lobby extends Component {
+export default class Login extends Component {
   static style = {
     wrapper: {
       position: 'relative',
+      height: '100vh',
+      width: '100%',
+      overflow: 'hidden',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    holder: {
+      width: '100%',
+      maxWidth: '400px',
     },
   }
 
-  @observable message = 'Join Game'
+  @observable message = 'Blackjack Code Sample'
 
   @action onReset = () => {
-    this.message = 'Join Game';
+    this.message = 'Blackjack Code Sample';
   }
 
   @action onError = (error) => {
@@ -33,7 +43,6 @@ export default class Lobby extends Component {
   @action onResult = (result) => {
     console.log('Join Game result', result);
     this.message = 'Joined Game!';
-    // setTimeout(() => { location.href = '/blackjack'; }, 2000);
   }
 
   @action onSubmit = ({ playerName, playerEmail, playerPassword }) => {
@@ -49,32 +58,34 @@ export default class Lobby extends Component {
   }
 
   render() {
-    const { style } = Lobby;
+    const { style } = Login;
     const { message } = this;
 
     return (
       <div style={style.wrapper}>
-        <Form
-          name='playerJoin'
-          onReset={this.onReset}
-          onError={this.onError}
-          onSubmit={this.onSubmit}
-        >
-          <div>{message}</div>
-          <TextInput
-            name='playerName'
-            placeholder='Player Name'
-          />
-          <EmailInput
-            name='playerEmail'
-            placeholder='Player Email'
-          />
-          <PasswordInput
-            name='playerPassword'
-            placeholder='Player Password'
-          />
-          <FormButton text='Play Blackjack' />
-        </Form>
+        <div style={style.holder}>
+          <Form
+            name='playerJoin'
+            onReset={this.onReset}
+            onError={this.onError}
+            onSubmit={this.onSubmit}
+          >
+            <div>{message}</div>
+            <TextInput
+              name='playerName'
+              placeholder='Player Name'
+            />
+            <EmailInput
+              name='playerEmail'
+              placeholder='Player Email'
+            />
+            <PasswordInput
+              name='playerPassword'
+              placeholder='Player Password'
+            />
+            <FormButton text='Play Blackjack' />
+          </Form>
+        </div>
       </div>
     );
   }
