@@ -34,7 +34,6 @@ export default class Blackjack extends Base {
 
   findCurrentGame({ playerId }) {
     const game = this.findOne({ playerId, finished: false });
-    // console.log('findCurrentGame', game);
     if (game) return game;
     return null;
   }
@@ -45,8 +44,6 @@ export default class Blackjack extends Base {
 
     // Ensure score totals for the player and dealer hands are kept up to date
     this.updateScoreTotals();
-
-    // console.log('getState', game);
 
     // We only return a whitelist of information that we want the client to actually see for the stored gameState, instead of all the data available on the database. Sensitive information like what cards are in the deck are not returned to the client.
     const {
@@ -70,8 +67,7 @@ export default class Blackjack extends Base {
     const actions = this.getAvailableActions();
 
     // Only display the second after card to the client, unless the game is finished in which case you can show the dealer's entire hand
-    /* const shimArray = [...dealerHand.cards];
-    let availableDealerHand = shimArray.filter((card, index) => {
+    let availableDealerHand = [...dealerHand.cards].filter((card, index) => {
       return index !== 0;
     });
     if (finished) { availableDealerHand = dealerHand.cards; }
@@ -80,22 +76,20 @@ export default class Blackjack extends Base {
     let visibleDealerScore = this.getHandScore(availableDealerHand);
     if (finished) { visibleDealerScore = dealerScore; }
 
-    console.log('Checkaroo', dealerHand.cards, availableDealerHand);*/
-
     this.state = {
       blackjack: {
         blackjackId,
         playerId,
         playerBetAmount,
         playerScore,
-        dealerScore,
+        dealerScore: visibleDealerScore,
         finished,
         outcome,
         outcomeType,
         payout,
         actions,
         // deck: deck.cards,
-        dealerHand: dealerHand.cards,
+        dealerHand: availableDealerHand,
         playerHand: playerHand.cards,
       },
     };
@@ -248,8 +242,6 @@ export default class Blackjack extends Base {
       actions.push('stand');
     }
 
-    // console.log('final actions', actions);
-
     return actions;
   }
 
@@ -277,9 +269,6 @@ export default class Blackjack extends Base {
   }
 
   startGame({ playerId, playerBetAmount }) {
-    // if (this.currentGame) return console.error('You can only start a game when one is not already in progress');
-    // console.log('newGame', playerId, playerBetAmount);
-
     // Create a new game
     const blackjackId = uuid.v4();
     this.currentGame = {
@@ -365,8 +354,6 @@ export default class Blackjack extends Base {
       aceCount--;
     }
 
-    // console.log('getHandScore', hand.cards, score);
-
     return score;
   }
 
@@ -384,14 +371,12 @@ export default class Blackjack extends Base {
   // Blackjack beats any hand that is not a blackjack, including 21
   isBlackjack(hand) {
     const score = this.getHandScore(hand);
-    // console.log('isBlackjack', score, hand);
     return score === Blackjack.WIN_CONDITION && hand.cards.length === 2;
   }
 
   // Determine if the hand has gone over 21
   isBust(hand) {
     const score = this.getHandScore(hand);
-    // console.log('isBust', score, hand);
     return score >= Blackjack.LOSE_CONDITION;
   }
 
@@ -401,19 +386,14 @@ export default class Blackjack extends Base {
     const card = currentGame.deck.draw();
     hand.add(card);
 
-    // If the player busts, stand automatically and let the player know the outcome of the game accordingly.
+    // If player busts, finish the game immediately as there is no need for a dealer to play out their hand as the entire point of the game is moot now since the player has busted.
     const playerBust = this.isBust(hand);
-    // console.log('playerBust', playerBust);
-    if (playerBust) {
-      console.log('PLAYER BUSTED', playerBust);
-      // Finish the game, there is no need for a dealer to play out there hand as the entire point of the game is moot now since the player has busted.
-      this.determineOutcome();
-    }
+    if (playerBust) { this.determineOutcome(); }
   }
 
   stand() {
     const { currentGame } = this;
-    if (!currentGame || currentGame.finished) return console.error(`Stand can't be used when no game is in progress`, currentGame);
+    if (!currentGame || currentGame.finished) return console.error(`Stand can't be used when no game is in progress`);
 
     // Play out the dealer's hand until they hit their stand threshold
     this.playOut();

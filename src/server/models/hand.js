@@ -28,12 +28,11 @@ export default class Hand extends Base {
 
   add(card) {
     // Add cards to a hand
-    console.log('add', card);
     if (card instanceof Card) {
       this.cards.push(card);
       return this.cards;
     }
-    // return console.error('Can only add a card to a hand');
+    return console.error('Can only add a card to a hand');
   }
 
   count() {
