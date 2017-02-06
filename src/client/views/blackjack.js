@@ -141,6 +141,12 @@ export default class Blackjack extends Component {
     if (blackjack) {
       const { finished, actions, outcome, outcomeType, payout, playerBetAmount, playerScore, dealerScore, dealerHand, playerHand } = blackjack;
 
+      // If the game isn't finished, add a dummy card to the beginning of the dealer's deck so that we can simulate a face down card
+      if (!finished) {
+        const dummyCard = { rank: 'dummy', suit: 'fake' };
+        dealerHand.unshift(dummyCard);
+      }
+
       const dealerCards = dealerHand.map((card, index) => {
         const { rank, suit } = card;
         return (
