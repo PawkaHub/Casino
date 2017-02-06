@@ -58,4 +58,4 @@ localStorage.removeItem('casino-session-token');
 store.showData();
 ```
 
-5.) For the sake of time, the design has not been tested on mobile, so it is best used on a desktop or laptop browser.
+5.) For the sake of time, the design has not been tested on mobile, so it is best used on a desktop or laptop browser in Google Chrome.
